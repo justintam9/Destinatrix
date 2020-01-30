@@ -1,4 +1,4 @@
-package com.comp1601.destinatrix;
+package com.project.destinatrix;
 
 import org.junit.Test;
 
