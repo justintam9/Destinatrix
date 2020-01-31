@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "323876579322",
+    "firebase_url": "https://destinatrix-9aa53.firebaseio.com",
+    "project_id": "destinatrix-9aa53",
+    "storage_bucket": "destinatrix-9aa53.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:323876579322:android:80666557e572758d9e6643",
+        "android_client_info": {
+          "package_name": "com.project.destinatrix"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "323876579322-nbsbkdehiq92ncf7qen49vnjs1frqit9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB1HgzQpBE5j0oyQnHW_9Ya2e3YORqGndU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "323876579322-nbsbkdehiq92ncf7qen49vnjs1frqit9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
