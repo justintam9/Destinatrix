@@ -1,0 +1,7 @@
+Duties:
+- Planned implementation of features for comign weeks (1.5h)
+- Design login UI (2h)
+- Implement login UI (4h)
+
+Achievements:
+- Completed login UI
