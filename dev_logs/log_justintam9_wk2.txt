@@ -1,0 +1,6 @@
+ - setup dev environment with android studio
+ - began planning for implementation for first few features
+ - started on trip UI
+
+ - issues with not enough disk space (solved)
+ - AMD CPU not cooperating with Intel tech for emulator (solved)
