@@ -1,0 +1,9 @@
+Duties:
+- team meeting to assign tasks to be done before the next week (1h)
+- create firebase project (1h)
+- firebase integration to the project and invite collaberators to firebase (3h)
+- planned logic for register using firebase (2h)
+
+Achievments: 
+- finished firebase integration 
+- created firebase project 
