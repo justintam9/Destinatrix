@@ -1,0 +1,8 @@
+Duties:
+- team meating to decide how to start and rough plan about the app  (2h)
+- getting myself familiar with android studio (3h)
+- refresh my memory on github and set up the project (2h)
+
+Achievments:
+- downloaded android studio and start a basic application as a warm up 
+- set up git with the project 
