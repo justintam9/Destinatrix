@@ -1,0 +1,7 @@
+Duties:
+    - work on tripUI(6h)
+
+Achievements:
+    - completed basic tripUI
+
+- very annoying issues getting images and text to display

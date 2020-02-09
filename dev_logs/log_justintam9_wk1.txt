@@ -1,6 +1,7 @@
  Duties
- - Finish non-functional properties for proposal
- - Rehearse project proposal
+ - Finish non-functional properties for proposal (2h)
+ - Rehearse project proposal (1h)
+ - Team meeting for implementation (1h)
 
  Achievements
  - Presented proposal

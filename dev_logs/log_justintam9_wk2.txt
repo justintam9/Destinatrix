@@ -1,6 +1,6 @@
 Duties: 
- - begin planning for implementation for first few features
- - started on trip UI
+ - begin planning for implementation for first few features (1h)
+ - started on trip UI (4h)
 
 Achievements:
  - setup dev environment with android studio
