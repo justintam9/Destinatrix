@@ -1,79 +1,68 @@
 package com.project.destinatrix;
 
+import android.app.Activity;
 import android.content.Context;
 import android.database.DataSetObserver;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
-class CustomAdapter implements ListAdapter {
-    ArrayList<SubjectData> arrayList;
+public class CustomAdapter extends ArrayAdapter<String> {
+    ArrayList<tripData>  tripList;
     Context context;
-    public CustomAdapter(Context context, ArrayList<SubjectData> arrayList) {
-        this.arrayList=arrayList;
-        this.context=context;
+    public CustomAdapter(Activity context, ArrayList<tripData> tripList){
+        super (context, R.layout.triplist_row);
+
+        this.context = context;
+        this.tripList = tripList;
     }
-    @Override
-    public boolean areAllItemsEnabled() {
-        return false;
-    }
-    @Override
-    public boolean isEnabled(int position) {
-        return true;
-    }
-    @Override
-    public void registerDataSetObserver(DataSetObserver observer) {
-    }
-    @Override
-    public void unregisterDataSetObserver(DataSetObserver observer) {
-    }
+
     @Override
     public int getCount() {
-        return arrayList.size();
+        return tripList.size();
     }
+
+    @NonNull
     @Override
-    public Object getItem(int position) {
-        return position;
-    }
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-    @Override
-    public boolean hasStableIds() {
-        return false;
-    }
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        SubjectData subjectData = arrayList.get(position);
-        if(convertView == null) {
-            LayoutInflater layoutInflater = LayoutInflater.from(context);
-            convertView = layoutInflater.inflate(R.layout.triplist_row, null);
-            convertView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                }
-            });
-            TextView tittle = convertView.findViewById(R.id.title);
-            ImageView imag = convertView.findViewById(R.id.list_image);
-            tittle.setText(subjectData.title);
+    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        ViewHolder viewHolder = new ViewHolder();
+        if(convertView == null){
+            LayoutInflater mInflater = (LayoutInflater) context.
+                    getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = mInflater.inflate(R.layout.triplist_row,null,true);
+            viewHolder.imag = (ImageView) convertView.findViewById(R.id.list_image);
+            viewHolder.title = (TextView) convertView.findViewById(R.id.title);
+            viewHolder.des = (TextView) convertView.findViewById(R.id.description);
+            convertView.setTag(viewHolder);
         }
+        else{
+            viewHolder= (ViewHolder) convertView.getTag();
+        }
+
+        tripData trip = tripList.get(position);
+        viewHolder.title.setText(trip.title);
+        viewHolder.des.setText(trip.description);
+        viewHolder.imag.setImageResource(trip.image);
         return convertView;
+
     }
-    @Override
-    public int getItemViewType(int position) {
-        return position;
+
+    class ViewHolder{
+        TextView title;
+        TextView des;
+        ImageView imag;
     }
-    @Override
-    public int getViewTypeCount() {
-        return arrayList.size();
-    }
-    @Override
-    public boolean isEmpty() {
-        return false;
-    }
+
+
 }

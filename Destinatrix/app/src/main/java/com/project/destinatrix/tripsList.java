@@ -1,8 +1,6 @@
 package com.project.destinatrix;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -10,6 +8,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -18,31 +17,27 @@ import java.util.ArrayList;
 
 public class tripsList extends AppCompatActivity {
     private ListView list;
-    private CustomAdapter adapter;
+    ArrayList<tripData>  tripList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trips_list);
 
-/*        getSupportActionBar().setTitle("Trips");
+        getSupportActionBar().setTitle("Trips");
 
-        ArrayList<SubjectData>  tripList = new ArrayList<>();
-        tripList.add(new SubjectData("Test", "@drawable/destinatrix.png"));
-
-        adapter = new CustomAdapter(this, tripList);
+        tripList = new ArrayList<>();
+        tripList.add(new tripData("Test", "Test", R.drawable.login_btn_google));
+        list = (ListView) findViewById(R.id.listview);
+        CustomAdapter adapter = new CustomAdapter(this, tripList);
         list.setAdapter(adapter);
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent mIntent = new Intent(tripsList.this, tripsList.class);
+                startActivity(mIntent);
+            }
+        });
 
-        LinearLayout layout = findViewById((R.id.list_layout));
-        for(int i =0; i<adapter.getCount(); i++){
-            ImageView imag = new ImageView(this);
-            SubjectData trip = tripList.get(i);
-            String uri = trip.image;
-            int imageResource = getResources().getIdentifier(uri, null, getPackageName());
-            Drawable res = getResources().getDrawable(imageResource);
-            imag.setImageDrawable(res);
-            layout.addView(imag);
-        }
-*/
     }
 
 
