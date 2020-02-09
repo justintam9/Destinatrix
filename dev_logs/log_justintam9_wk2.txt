@@ -1,0 +1,10 @@
+Duties: 
+ - begin planning for implementation for first few features
+ - started on trip UI
+
+Achievements:
+ - setup dev environment with android studio
+ - basic UI design for trip.. needs more work
+
+ - issues with not enough disk space (solved)
+ - AMD CPU not cooperating with Intel tech for emulator (solved)
