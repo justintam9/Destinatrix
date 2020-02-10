@@ -3,14 +3,11 @@ package com.project.destinatrix;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -28,7 +25,7 @@ public class tripsList extends AppCompatActivity {
         tripList = new ArrayList<>();
         tripList.add(new tripData("Test", "Test", R.drawable.login_btn_google));
         list = (ListView) findViewById(R.id.listview);
-        CustomAdapter adapter = new CustomAdapter(this, tripList);
+        customTripAdapter adapter = new customTripAdapter(this, tripList);
         list.setAdapter(adapter);
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

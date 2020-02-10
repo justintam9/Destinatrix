@@ -18,10 +18,10 @@ import androidx.annotation.Nullable;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
-public class CustomAdapter extends ArrayAdapter<String> {
+public class customTripAdapter extends ArrayAdapter<String> {
     ArrayList<tripData>  tripList;
     Context context;
-    public CustomAdapter(Activity context, ArrayList<tripData> tripList){
+    public customTripAdapter(Activity context, ArrayList<tripData> tripList){
         super (context, R.layout.triplist_row);
 
         this.context = context;
