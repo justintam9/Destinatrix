@@ -24,6 +24,7 @@
         android:layout_toRightOf="@+id/list_image"
         android:textColor="#333"
         android:textSize="22dp"
+        android:paddingLeft="5dp"
         android:textStyle="bold" />
 
 
