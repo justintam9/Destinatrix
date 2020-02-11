@@ -7,4 +7,13 @@
     <string name="loginDontHaveAnAccountText">Don\'t have an account?</string>
     <string name="logo_added">logo added</string>
     <string name="loginButtonRegister"><u>Register.</u></string>
+    <string name="registerTextViewEmail">Email</string>
+    <string name="registerTextViewPassword">Password</string>
+    <string name="registerButtonTextSignUp">Sign Up</string>
+    <string name="registerButtonLoginWithGoogle">Sign up with Google</string>
+    <string name="registerAlreadyHaveAnAccountText">Already have an account? Sign in.</string>
+    <string name="signUpFailMessage">Sign Up Unsuccessful, Please Try Again</string>
+    <!--    <string name="registerButtonSignIn"><u>Sign in.</u></string>-->
+
+
 </resources>
