@@ -17,7 +17,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class RegisterActivity extends AppCompatActivity {
-    EditText emailId, password;
+    EditText emailId, password, userName;
     Button btnSignUp;
     TextView tvSignIn;
     FirebaseAuth mFireBaseAuth;
@@ -28,6 +28,7 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
         mFireBaseAuth = FirebaseAuth.getInstance();
+        userName = findViewById(R.id.userName_editText_register);
         emailId = findViewById(R.id.email_editText_register);
         password = findViewById(R.id.password_editText_register);
         tvSignIn = findViewById(R.id.registerSignInText);
@@ -35,9 +36,10 @@ public class RegisterActivity extends AppCompatActivity {
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String usr = userName.getText().toString();
                 String email = emailId.getText().toString();
                 String pwd = password.getText().toString();
-                if (email.isEmpty() && pwd.isEmpty()) {
+                if (email.isEmpty() && pwd.isEmpty() && usr.isEmpty()) {
                     Toast.makeText(RegisterActivity.this, "Fields Are Empty!", Toast.LENGTH_SHORT).show();
                 } else if (email.isEmpty()) { // missing email
                     emailId.setError("Please enter an email address");
@@ -45,7 +47,12 @@ public class RegisterActivity extends AppCompatActivity {
                 } else if (pwd.isEmpty()){ // missing password
                     password.setError("Please enter a password");
                     password.requestFocus();
-                } else if (!email.isEmpty() && !pwd.isEmpty()){ // email and password provided
+                }
+                else if(usr.isEmpty()){ //missing user name
+                    userName.setError("Please enter user name");
+                    userName.requestFocus();
+                }
+                else if (!email.isEmpty() && !pwd.isEmpty() && !usr.isEmpty()){ // user name, email and password provided
                     mFireBaseAuth.createUserWithEmailAndPassword(email,pwd).addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {

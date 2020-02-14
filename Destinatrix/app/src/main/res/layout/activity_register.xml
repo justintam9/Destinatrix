@@ -28,18 +28,53 @@
         app:layout_constraintTop_toTopOf="@+id/top_view_register" />
 
 
+
+    <TextView
+        android:id="@+id/userName_text_register"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="56dp"
+        android:fontFamily="sans-serif-black"
+        android:text="@string/registerTextUserName"
+        android:textColor="#1391F1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/top_view_register" />
+
+    <EditText
+        android:id="@+id/userName_editText_register"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="25dp"
+        android:autofillHints=""
+        android:ems="10"
+        android:hint="johnS"
+        android:inputType="textPersonName"
+        android:text=""
+        app:layout_constraintBottom_toTopOf="@+id/email_text_register"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/userName_text_register" />
+
+
     <TextView
         android:id="@+id/email_text_register"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="160dp"
         android:fontFamily="sans-serif-black"
         android:text="@string/registerTextViewEmail"
         android:textColor="#1391F1"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/top_view_register" />
+
 
     <EditText
         android:id="@+id/email_editText_register"
@@ -137,4 +172,7 @@
         android:paddingStart="0dp"
         android:text="@string/registerAlreadyHaveAnAccountText"/>
     </LinearLayout>
+
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
