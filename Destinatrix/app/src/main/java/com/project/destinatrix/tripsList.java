@@ -15,6 +15,7 @@ import java.util.ArrayList;
 public class tripsList extends AppCompatActivity {
     private ListView list;
     ArrayList<tripData>  tripList;
+    Integer[] images = {R.drawable.stock_image1,R.drawable.stock_image2,R.drawable.stock_image3,R.drawable.stock_image4,R.drawable.stock_image5};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,7 +24,7 @@ public class tripsList extends AppCompatActivity {
         getSupportActionBar().setTitle("Trips");
 
         tripList = new ArrayList<>();
-        tripList.add(new tripData("Test", "Test", R.drawable.login_btn_google));
+        tripList.add(new tripData("Test", "Test", getRandomImage()));
         list = (ListView) findViewById(R.id.listview);
         customTripAdapter adapter = new customTripAdapter(this, tripList);
         list.setAdapter(adapter);
@@ -55,6 +56,10 @@ public class tripsList extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.trips_list_menu, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    public Integer getRandomImage(){
+        return images[(int)(Math.random()*(images.length+1))];
     }
 }
 
