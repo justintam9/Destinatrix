@@ -2,26 +2,21 @@ package com.project.destinatrix;
 
 import android.app.Activity;
 import android.content.Context;
-import android.database.DataSetObserver;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
-public class customTripAdapter extends ArrayAdapter<String> {
-    ArrayList<tripData>  tripList;
+public class CustomTripAdapter extends ArrayAdapter<String> {
+    ArrayList<TripData>  tripList;
     Context context;
-    public customTripAdapter(Activity context, ArrayList<tripData> tripList){
+    public CustomTripAdapter(Activity context, ArrayList<TripData> tripList){
         super (context, R.layout.triplist_row);
 
         this.context = context;
@@ -50,7 +45,7 @@ public class customTripAdapter extends ArrayAdapter<String> {
             viewHolder= (ViewHolder) convertView.getTag();
         }
 
-        tripData trip = tripList.get(position);
+        TripData trip = tripList.get(position);
         viewHolder.title.setText(trip.title);
         viewHolder.des.setText(trip.description);
         viewHolder.imag.setImageResource(trip.image);

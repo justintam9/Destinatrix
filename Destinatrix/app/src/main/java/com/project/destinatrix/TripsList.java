@@ -10,11 +10,13 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.ArrayList;
 
-public class tripsList extends AppCompatActivity {
+public class TripsList extends AppCompatActivity implements TripDialog.tripDialogListener{
     private ListView list;
-    ArrayList<tripData>  tripList;
+    ArrayList<TripData>  tripList;
     Integer[] images = {R.drawable.stock_image1,R.drawable.stock_image2,R.drawable.stock_image3,R.drawable.stock_image4,R.drawable.stock_image5};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,29 +26,41 @@ public class tripsList extends AppCompatActivity {
         getSupportActionBar().setTitle("Trips");
 
         tripList = new ArrayList<>();
-        tripList.add(new tripData("Test", "Test", getRandomImage()));
-        list = (ListView) findViewById(R.id.listview);
-        customTripAdapter adapter = new customTripAdapter(this, tripList);
+        list = findViewById(R.id.listview);
+        CustomTripAdapter adapter = new CustomTripAdapter(this, tripList);
         list.setAdapter(adapter);
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent mIntent = new Intent(tripsList.this, tripsList.class);
-                startActivity(mIntent);
+
             }
         });
-
+        FloatingActionButton fab = findViewById(R.id.add_button);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openDialog();
+            }
+        });
     }
 
+    @Override
+    public void applyTexts(String name, String description) {
+        tripList.add(new TripData(name,description,getRandomImage()));
+    }
 
+    public void openDialog(){
+        TripDialog tripDialog = new TripDialog();
+        tripDialog.show(getSupportFragmentManager(), "trip Dialog");
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_edit:
-                Intent edit = new Intent(this, tripsList.class);
+                Intent edit = new Intent(this, TripsList.class);
                 startActivity(edit);
             case R.id.menu_sign_out:
-                Intent sign_out = new Intent(this, tripsList.class);
+                Intent sign_out = new Intent(this, TripsList.class);
                 startActivity(sign_out);
         }
         return super.onOptionsItemSelected(item);
