@@ -21,7 +21,7 @@ import java.util.ArrayList;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
-public class TripsList extends AppCompatActivity implements TripDialog.tripDialogListener{
+public class TripsList extends AppCompatActivity implements AddTripDialog.tripDialogListener, EditTripDialog.tripDialogListener{
     private ListView list;
     ArrayList<TripData>  tripList;
     private CustomTripAdapter adapter;
@@ -37,11 +37,13 @@ public class TripsList extends AppCompatActivity implements TripDialog.tripDialo
         list = findViewById(R.id.listview);
         adapter = new CustomTripAdapter(this, tripList);
         list.setAdapter(adapter);
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+        list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                System.out.println(i);
-                System.out.println(l);
+            public boolean onItemLongClick(AdapterView<?> arg0, View view,
+                                           int pos, long id) {
+                editTripDialog(pos);
+                return true;
             }
         });
 
@@ -77,7 +79,7 @@ public class TripsList extends AppCompatActivity implements TripDialog.tripDialo
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                openDialog();
+                addTripDialog();
             }
         });
     }
@@ -87,9 +89,21 @@ public class TripsList extends AppCompatActivity implements TripDialog.tripDialo
         tripList.add(new TripData(name,description,getRandomImage()));
     }
 
-    public void openDialog(){
-        TripDialog tripDialog = new TripDialog();
-        tripDialog.show(getSupportFragmentManager(), "trip Dialog");
+    public void editTexts(String name, String description, Integer pos) {
+        tripList.set(pos,new TripData(name,description,getRandomImage()));
+    }
+
+    public void addTripDialog(){
+        AddTripDialog addTripDialog = new AddTripDialog();
+        addTripDialog.show(getSupportFragmentManager(), "add_Trip_Dialog");
+    }
+
+    public void editTripDialog(int pos){
+        Bundle args = new Bundle();
+        args.putInt("pos",pos);
+        EditTripDialog editTripDialog = new EditTripDialog();
+        editTripDialog.setArguments(args);
+        editTripDialog.show(getSupportFragmentManager(), "edit_Trip_Dialog");
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

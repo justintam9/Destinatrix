@@ -59,11 +59,11 @@
             android:layout_height="match_parent"
             android:id="@+id/txt_delete"
             android:gravity="center_vertical"
-            android:text="Trip Deleted"
+            android:text="Swipe Again to Delete"
             android:clickable="false"
             android:layout_weight="2"
             android:hapticFeedbackEnabled="true"
-            android:textSize="32dp"
+            android:textSize="20dp"
             android:textColor="@android:color/white"/>
 
         <TextView
@@ -73,10 +73,9 @@
             android:id="@+id/txt_undo"
             android:text="Click to Undo"
             android:clickable="false"
-            android:textSize="32dp"
+            android:textSize="20dp"
             android:layout_weight="1"
-            android:textColor="@android:color/white"
-            android:background="@color/gray"/>
+            android:textColor="@android:color/white" />
 
     </LinearLayout>
 </FrameLayout>

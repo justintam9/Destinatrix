@@ -11,18 +11,19 @@ import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatDialogFragment;
 
-public class TripDialog extends AppCompatDialogFragment {
+public class EditTripDialog extends AppCompatDialogFragment {
     private EditText tripName;
     private EditText tripDesc;
     private tripDialogListener listener;
     public Dialog onCreateDialog(Bundle savedInstanceState){
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.add_trip_dialog,null);
 
         builder.setView(view);
-        builder.setTitle("Add Trip");
+        builder.setTitle("Edit Trip");
         builder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -32,9 +33,11 @@ public class TripDialog extends AppCompatDialogFragment {
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        Bundle args = getArguments();
                         String name = tripName.getText().toString();
                         String description = tripDesc.getText().toString();
-                        listener.applyTexts(name,description);
+                        Integer pos = args.getInt("pos");
+                        listener.editTexts(name,description,pos);
                     }
                 });
         tripName = view.findViewById(R.id.trip_name);
@@ -54,6 +57,6 @@ public class TripDialog extends AppCompatDialogFragment {
     }
 
     public interface tripDialogListener{
-        void applyTexts(String name, String description);
+        void editTexts(String name, String description,Integer pos);
     }
 }
