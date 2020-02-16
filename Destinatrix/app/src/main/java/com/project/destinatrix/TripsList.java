@@ -7,16 +7,24 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
+
+import com.hudomju.swipe.SwipeToDismissTouchListener;
+import com.hudomju.swipe.adapter.ListViewAdapter;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
+import static android.widget.Toast.LENGTH_SHORT;
+
 public class TripsList extends AppCompatActivity implements TripDialog.tripDialogListener{
     private ListView list;
     ArrayList<TripData>  tripList;
+    private CustomTripAdapter adapter;
     Integer[] images = {R.drawable.stock_image1,R.drawable.stock_image2,R.drawable.stock_image3,R.drawable.stock_image4,R.drawable.stock_image5};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,14 +35,44 @@ public class TripsList extends AppCompatActivity implements TripDialog.tripDialo
 
         tripList = new ArrayList<>();
         list = findViewById(R.id.listview);
-        CustomTripAdapter adapter = new CustomTripAdapter(this, tripList);
+        adapter = new CustomTripAdapter(this, tripList);
         list.setAdapter(adapter);
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
+                System.out.println(i);
+                System.out.println(l);
             }
         });
+
+        final SwipeToDismissTouchListener<ListViewAdapter> touchListener =
+                new SwipeToDismissTouchListener<>(
+                        new ListViewAdapter(list),
+                        new SwipeToDismissTouchListener.DismissCallbacks<ListViewAdapter>() {
+                            @Override
+                            public boolean canDismiss(int position) {
+                                return true;
+                            }
+
+                            @Override
+                            public void onDismiss(ListViewAdapter view, int position) {
+                                adapter.remove(position);
+                            }
+                        });
+
+        list.setOnTouchListener(touchListener);
+        list.setOnScrollListener((AbsListView.OnScrollListener) touchListener.makeScrollListener());
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (touchListener.existPendingDismisses()) {
+                    touchListener.undoPendingDismiss();
+                } else {
+                    Toast.makeText(TripsList.this, "Position " + position, LENGTH_SHORT).show();
+                }
+            }
+        });
+
         FloatingActionButton fab = findViewById(R.id.add_button);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
