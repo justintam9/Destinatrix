@@ -1,0 +1,7 @@
+Duties:
+- Planned implementation of features for comign weeks (1.5h)
+- Plan with group for deliverable 2 (2h)
+- Work on login logic
+
+Achievements:
+- Completed a rough plan for weeks leading up to deliverable 2

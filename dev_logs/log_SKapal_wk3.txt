@@ -1,0 +1,7 @@
+Duties:
+- Planned implementation of features for comign weeks (1.5h)
+- Design login logic (4h)
+- Implement login logic (4h)
+
+Achievements:
+- Completed authentication design for login
