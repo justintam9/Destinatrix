@@ -6,15 +6,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ListView;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 
-public class tripsList extends AppCompatActivity {
+public class TripListActivity extends AppCompatActivity {
     private ListView list;
-    ArrayList<tripData>  tripList;
+    ArrayList<TripData>  tripList;
     Integer[] images = {R.drawable.stock_image1,R.drawable.stock_image2,R.drawable.stock_image3,R.drawable.stock_image4,R.drawable.stock_image5};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,17 +23,19 @@ public class tripsList extends AppCompatActivity {
         getSupportActionBar().setTitle("Trips");
 
         tripList = new ArrayList<>();
-        tripList.add(new tripData("Test", "Test", getRandomImage()));
+        tripList.add(new TripData("Test", "Test", getRandomImage()));
         list = (ListView) findViewById(R.id.listview);
-        customTripAdapter adapter = new customTripAdapter(this, tripList);
+        CustomTripAdapter adapter = new CustomTripAdapter(this, tripList);
         list.setAdapter(adapter);
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent mIntent = new Intent(tripsList.this, tripsList.class);
-                startActivity(mIntent);
-            }
-        });
+
+        // TODO: Change intent to open correct screen.
+//        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                Intent mIntent = new Intent(TripListActivity.this, TripListActivity.class);
+//                startActivity(mIntent);
+//            }
+//        });
 
     }
 
@@ -43,10 +44,11 @@ public class tripsList extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_edit:
-                Intent edit = new Intent(this, tripsList.class);
+                Intent edit = new Intent(this, TripListActivity.class);
                 startActivity(edit);
             case R.id.menu_sign_out:
-                Intent sign_out = new Intent(this, tripsList.class);
+                Intent sign_out = new Intent(this, LoginActivity.class);
+                FirebaseAuth.getInstance().signOut();
                 startActivity(sign_out);
         }
         return super.onOptionsItemSelected(item);
@@ -59,7 +61,7 @@ public class tripsList extends AppCompatActivity {
     }
 
     public Integer getRandomImage(){
-        return images[(int)(Math.random()*(images.length+1))];
+        return images[(int)(Math.random()*(images.length))];
     }
 }
 
