@@ -19,7 +19,7 @@ public class AddTripDialog extends AppCompatDialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.add_trip_dialog,null);
+        View view = inflater.inflate(R.layout.trip_dialog,null);
 
         builder.setView(view);
         builder.setTitle("Add Trip");
