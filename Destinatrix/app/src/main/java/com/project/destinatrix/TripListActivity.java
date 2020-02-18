@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -19,9 +18,10 @@ import com.hudomju.swipe.adapter.ListViewAdapter;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
-import static android.widget.Toast.LENGTH_SHORT;
 
 public class TripListActivity extends AppCompatActivity implements AddTripDialog.tripDialogListener, EditTripDialog.tripDialogListener{
     private ListView list;
@@ -76,7 +76,8 @@ public class TripListActivity extends AppCompatActivity implements AddTripDialog
                 if (touchListener.existPendingDismisses()) {
                     touchListener.undoPendingDismiss();
                 } else {
-                    Toast.makeText(TripListActivity.this, "Position " + position, LENGTH_SHORT).show();
+                    Intent mIntent = new Intent(TripListActivity.this, TripListActivity.class);
+                    mIntent.putExtra("tripID",tripList.get(position).tripID);
                 }
             }
         });
@@ -92,11 +93,11 @@ public class TripListActivity extends AppCompatActivity implements AddTripDialog
 
     @Override
     public void applyTexts(String name, String description) {
-        tripList.add(new TripData(name,description,getRandomImage()));
+        tripList.add(new TripData(name,description,getRandomImage(),getCurrentTimeStamp()));
     }
 
     public void editTexts(String name, String description, Integer pos) {
-        tripList.set(pos,new TripData(name,description,getRandomImage()));
+        tripList.set(pos,new TripData(name,description,getRandomImage(),getCurrentTimeStamp()));
     }
 
     public void addTripDialog(){
@@ -130,6 +131,10 @@ public class TripListActivity extends AppCompatActivity implements AddTripDialog
 
     public Integer getRandomImage(){
         return images[(int)(Math.random()*(images.length+1))];
+    }
+
+    public String getCurrentTimeStamp() {
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date());
     }
 }
 
