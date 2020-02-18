@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
-    tools:context=".MainActivity">
+    tools:context=".LoginActivity">
 
     <View
         android:id="@+id/top_view_login"
@@ -123,7 +123,7 @@
             android:text="@string/loginDontHaveAnAccountText" />
 
         <Button
-            android:id="@+id/checkout"
+            android:id="@+id/register_button_login"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="256dp"
             android:layout_height="wrap_content"

@@ -1,0 +1,6 @@
+Duties:
+- Finish trip UI(4h)
+- Start on trip Logic(4h)
+
+Achievements:
+- Able to get a functioning trips pages with add
