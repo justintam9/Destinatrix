@@ -12,7 +12,7 @@ import android.widget.EditText;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
 public class AddCityDialog extends AppCompatDialogFragment {
-    private EditText tripName;
+    private EditText cityName;
     private cityDialogListener listener;
     public Dialog onCreateDialog(Bundle savedInstanceState){
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -31,11 +31,11 @@ public class AddCityDialog extends AppCompatDialogFragment {
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        String name = tripName.getText().toString();
+                        String name = cityName.getText().toString();
                         listener.applyTexts(name);
                     }
                 });
-        tripName = view.findViewById(R.id.trip_name);
+        cityName = view.findViewById(R.id.city_name);
 
         return builder.create();
     }

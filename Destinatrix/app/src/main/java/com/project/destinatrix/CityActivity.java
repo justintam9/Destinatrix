@@ -23,10 +23,7 @@ public class CityActivity extends AppCompatActivity implements AddCityDialog.cit
         setContentView(R.layout.activity_city_list);
 
         cityList = new ArrayList<>();
-        cityList.add(new CityData("test",getRandomImage()));
-        cityList.add(new CityData("test",getRandomImage()));
-        cityList.add(new CityData("test",getRandomImage()));
-        cityList.add(new CityData("test",getRandomImage()));
+
 
         RecyclerView view = findViewById(R.id.recyclerview_city);
         CustomCityAdapter myAdapter = new CustomCityAdapter(this,cityList);
@@ -42,7 +39,7 @@ public class CityActivity extends AppCompatActivity implements AddCityDialog.cit
         });
     }
     public Integer getRandomImage(){
-        return images[(int)(Math.random()*(images.length))];
+        return images[(int)(Math.random()*(images.length)+1)];
     }
 
     public void addCityDialog(){
@@ -56,3 +53,4 @@ public class CityActivity extends AppCompatActivity implements AddCityDialog.cit
     }
 
 }
+
