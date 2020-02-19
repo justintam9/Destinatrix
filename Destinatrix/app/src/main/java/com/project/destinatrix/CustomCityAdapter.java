@@ -1,0 +1,67 @@
+package com.project.destinatrix;
+
+
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.List;
+
+public class CustomCityAdapter extends RecyclerView.Adapter<CustomCityAdapter.MyViewHolder> {
+    private Context mContext;
+    private List<CityData> cityDataList;
+
+    public CustomCityAdapter(Context mContext, List<CityData> cityDataList){
+        this.mContext=mContext;
+        this.cityDataList = cityDataList;
+    }
+    @NonNull
+    @Override
+    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view;
+        LayoutInflater inflater = LayoutInflater.from(mContext);
+        view = inflater.inflate(R.layout.cardview_city,parent,false);
+
+
+        return new MyViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+        holder.city_title.setText(cityDataList.get(position).getTitle());
+        holder.city_image.setImageResource(cityDataList.get(position).getImage());
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+    }
+
+    @Override
+    public int getItemCount() {
+        return cityDataList.size();
+    }
+
+    public static class MyViewHolder extends RecyclerView.ViewHolder{
+
+        TextView city_title;
+        ImageView city_image;
+        CardView cardView;
+
+        public MyViewHolder(View itemView) {
+            super(itemView);
+
+            city_title = itemView.findViewById(R.id.city_title);
+            city_image = itemView.findViewById(R.id.city_image);
+            cardView = itemView.findViewById(R.id.cardview_id);
+        }
+    }
+}

@@ -11,6 +11,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.hudomju.swipe.SwipeToDismissTouchListener;
@@ -130,7 +131,7 @@ public class TripListActivity extends AppCompatActivity implements AddTripDialog
     }
 
     public Integer getRandomImage(){
-        return images[(int)(Math.random()*(images.length+1))];
+        return images[(int)(Math.random()*(images.length))];
     }
 
     public String getCurrentTimeStamp() {
