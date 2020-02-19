@@ -4,10 +4,12 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatDialogFragment;
 
@@ -40,7 +42,14 @@ public class AddTripDialog extends AppCompatDialogFragment {
         tripName = view.findViewById(R.id.trip_name);
         tripDesc = view.findViewById(R.id.trip_description);
 
-        return builder.create();
+        AlertDialog alert =  builder.create();
+        alert.show();
+        Button nButton = alert.getButton(Dialog.BUTTON_NEGATIVE);
+        Button pButton = alert.getButton(Dialog.BUTTON_POSITIVE);
+        nButton.setTextColor(Color.GRAY);
+        pButton.setTextColor(Color.GRAY);
+
+        return alert;
     }
 
     @Override
