@@ -28,6 +28,11 @@ public class CustomTripAdapter extends ArrayAdapter<String> {
         return tripList.size();
     }
 
+    public void remove(int position) {
+        tripList.remove(position);
+        notifyDataSetChanged();
+    }
+
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
