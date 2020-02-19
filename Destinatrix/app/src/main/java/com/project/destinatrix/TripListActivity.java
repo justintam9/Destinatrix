@@ -131,7 +131,7 @@ public class TripListActivity extends AppCompatActivity implements AddTripDialog
     }
 
     public Integer getRandomImage(){
-        return images[(int)(Math.random()*(images.length+1))];
+        return images[(int)(Math.random()*(images.length))];
     }
 
     public String getCurrentTimeStamp() {

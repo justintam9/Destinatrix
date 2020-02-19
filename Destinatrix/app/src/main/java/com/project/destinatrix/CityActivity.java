@@ -31,7 +31,7 @@ public class CityActivity extends AppCompatActivity {
         view.setAdapter(myAdapter);
     }
     public Integer getRandomImage(){
-        return images[(int)(Math.random()*(images.length+1))];
+        return images[(int)(Math.random()*(images.length))];
     }
 
 }
