@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -26,14 +28,17 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthCredential;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.DatabaseReference;
 
 public class RegisterActivity extends AppCompatActivity {
     EditText emailId, password, userName;
     Button btnSignUp, btnGoogleSignIn;
-    TextView tvSignIn,googleSignIn;
+    TextView tvSignIn;//,googleSignIn;
     FirebaseAuth mFireBaseAuth;
     GoogleSignInClient mGoogleSignInClient;
-
+    DatabaseReference databaseUsers;
     static final int GOOGLE_SIGN = 123;
 
     @Override
@@ -47,27 +52,21 @@ public class RegisterActivity extends AppCompatActivity {
         password = findViewById(R.id.password_editText_register);
         tvSignIn = findViewById(R.id.registerSignInText);
         btnSignUp = findViewById(R.id.register_button_register);
-        btnGoogleSignIn = findViewById(R.id.login_button_login);
-        googleSignIn = findViewById(R.id.text);
+        btnGoogleSignIn = findViewById(R.id.google_button_register);
+        databaseUsers = FirebaseDatabase.getInstance().getReference("users");
 
-        GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.
+        GoogleSignInOptions gso = new GoogleSignInOptions.
                 Builder()
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
 
-        mGoogleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
-
-        btnGoogleSignIn.setOnClickListener(v -> SignInGoogle());
-
-        if (mFireBaseAuth.getCurrentUser() != null) {
-            FirebaseUser user = mFireBaseAuth.getCurrentUser();
-            updateUI(user);
-        }
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                addUser(); // to call addUser method when clicking on the register button
                 String usr = userName.getText().toString();
                 String email = emailId.getText().toString();
                 String pwd = password.getText().toString();
@@ -85,7 +84,8 @@ public class RegisterActivity extends AppCompatActivity {
                     userName.requestFocus();
                 }
                 else if (!email.isEmpty() && !pwd.isEmpty() && !usr.isEmpty()){ // user name, email and password provided
-                    mFireBaseAuth.createUserWithEmailAndPassword(email,pwd).addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
+                    mFireBaseAuth.createUserWithEmailAndPassword(email,pwd)
+                            .addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if(!task.isSuccessful()){
@@ -96,6 +96,7 @@ public class RegisterActivity extends AppCompatActivity {
                             }
                         }
                     });
+
                 } else {
                     Toast.makeText(RegisterActivity.this, "Error Occurred!", Toast.LENGTH_SHORT).show();
                 }
@@ -111,14 +112,16 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
+        btnGoogleSignIn.setOnClickListener(v -> signInGoogle());
+
     }
 
-    void SignInGoogle(){
+    private void signInGoogle() {
         Intent signIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signIntent, GOOGLE_SIGN);
     }
 
-    @Override
+        @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == GOOGLE_SIGN){
@@ -137,6 +140,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount account) {
+
         Log.d("TAG", "FirebaseAuthWithGoogle: " + account.getId());
 
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
@@ -146,29 +150,34 @@ public class RegisterActivity extends AppCompatActivity {
                         Log.d("TAG", "signin success");
 
                         FirebaseUser user = mFireBaseAuth.getCurrentUser();
-                        updateUI(user);
+                       // updateUI(user);
                     }
 
                     else{
                         Log.w("TAG", "signin failure", task.getException());
 
                         Toast.makeText(this, "Signin Failed!", Toast.LENGTH_SHORT).show();
-                        updateUI(null);
+                       // updateUI(null);
                     }
                 });
     }
 
-    private void updateUI(FirebaseUser user) {
-        if(user != null ){
-            String name = user.getDisplayName();
-            String email = user.getEmail();
-            String photo = String.valueOf(user.getPhotoUrl());
+    private void addUser(){
+        String name = userName.getText().toString().trim();
+        String emailAddress = emailId.getText().toString().trim();
 
-            googleSignIn.append("Info : \n");
-            googleSignIn.append(name + "\n");
-            googleSignIn.append(email);
+        if(!TextUtils.isEmpty(name)){
+
+            String id = databaseUsers.push().getKey();
+
+            User user = new User(name, emailAddress, id);
+
+            databaseUsers.child(id).setValue(user);
+
+            Toast.makeText(this, "User added", Toast.LENGTH_LONG).show();
+
         }else{
-            googleSignIn.setText("Firebase Login \n");
+            Toast.makeText(this, "Please enter a name", Toast.LENGTH_LONG).show();
         }
     }
 }

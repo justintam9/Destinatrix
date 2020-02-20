@@ -28,13 +28,12 @@
         app:layout_constraintTop_toTopOf="@+id/top_view_register" />
 
 
-
     <TextView
         android:id="@+id/userName_text_register"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="56dp"
+        android:layout_marginTop="28dp"
         android:fontFamily="sans-serif-black"
         android:text="@string/registerTextUserName"
         android:textColor="#1391F1"
@@ -66,7 +65,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="160dp"
+        android:layout_marginTop="120dp"
         android:fontFamily="sans-serif-black"
         android:text="@string/registerTextViewEmail"
         android:textColor="#1391F1"
@@ -74,7 +73,6 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/top_view_register" />
-
 
     <EditText
         android:id="@+id/email_editText_register"
@@ -95,11 +93,12 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="16dp"
         android:fontFamily="sans-serif-black"
         android:text="@string/registerTextViewPassword"
         android:textColor="#1391F1"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/email_editText_register" />
 
@@ -121,7 +120,7 @@
         android:id="@+id/register_button_register"
         android:layout_width="347dp"
         android:layout_height="57dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="8dp"
         android:background="#1391F1"
         android:fontFamily="sans-serif-medium"
         android:text="@string/registerButtonTextSignUp"
