@@ -7,35 +7,32 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.EditText;
-
 import androidx.appcompat.app.AppCompatDialogFragment;
 
-public class AddCityDialog extends AppCompatDialogFragment {
-    private EditText cityName;
-    private cityDialogListener listener;
+public class RemoveCityDialog extends AppCompatDialogFragment {
+    private RemoveCityDialog.cityDialogListener listener;
     public Dialog onCreateDialog(Bundle savedInstanceState){
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(),R.style.AlertDialog);
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.city_dialog,null);
 
         builder.setView(view);
-        builder.setTitle("Add City");
+        builder.setTitle("Remove City");
         builder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
 
             }
         })
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Remove", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        String name = cityName.getText().toString();
-                        listener.applyTexts(name);
+                        Bundle args = getArguments();
+                        Integer pos = args.getInt("pos");
+                        listener.remove(pos);
                     }
                 });
-        cityName = view.findViewById(R.id.city_name);
 
         return builder.create();
     }
@@ -44,13 +41,13 @@ public class AddCityDialog extends AppCompatDialogFragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
-            listener = (cityDialogListener) context;
+            listener = (RemoveCityDialog.cityDialogListener) context;
         } catch (ClassCastException e){
             throw new ClassCastException(context.toString() + "need to implement cityDialogListener");
         }
     }
 
     public interface cityDialogListener{
-        void applyTexts(String name);
+        void remove(Integer pos);
     }
 }

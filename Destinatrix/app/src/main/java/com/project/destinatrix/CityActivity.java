@@ -1,5 +1,6 @@
 package com.project.destinatrix;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -12,7 +13,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
-public class CityActivity extends AppCompatActivity implements AddCityDialog.cityDialogListener, EditCityDialog.cityDialogListener{
+public class CityActivity extends AppCompatActivity implements RemoveCityDialog.cityDialogListener{
     ArrayList<CityData> cityList;
     Integer[] images = {R.drawable.stock_image1,R.drawable.stock_image2,R.drawable.stock_image3,R.drawable.stock_image4,R.drawable.stock_image5};
     CustomCityAdapter myAdapter;
@@ -26,6 +27,7 @@ public class CityActivity extends AppCompatActivity implements AddCityDialog.cit
 
         RecyclerView view = findViewById(R.id.recyclerview_city);
         myAdapter = new CustomCityAdapter(this,cityList);
+        cityList.add(new CityData("hi",getRandomImage()));
         view.setLayoutManager(new GridLayoutManager(this,3));
         view.setAdapter(myAdapter);
 
@@ -34,7 +36,8 @@ public class CityActivity extends AppCompatActivity implements AddCityDialog.cit
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addCityDialog();
+                //Intent search = new Intent(this, SearchCityActivity.class);
+                //startActivity(search);
             }
         });
     }
@@ -42,24 +45,7 @@ public class CityActivity extends AppCompatActivity implements AddCityDialog.cit
         return images[(int)(Math.random()*(images.length))];
     }
 
-    public void addCityDialog(){
-        AddCityDialog addCityDialog = new AddCityDialog();
-        addCityDialog.show(getSupportFragmentManager(), "add_City_Dialog");
-    }
 
-
-
-    @Override
-    public void applyTexts(String name) {
-        cityList.add(new CityData(name,getRandomImage()));
-    }
-
-    @Override
-    public void editTexts(String name,Integer pos) {
-        myAdapter.edit(pos,name);
-    }
-
-    @Override
     public void remove(Integer pos) {
         myAdapter.remove(pos);
     }

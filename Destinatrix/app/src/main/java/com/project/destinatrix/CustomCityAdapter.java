@@ -43,7 +43,7 @@ public class CustomCityAdapter extends RecyclerView.Adapter<CustomCityAdapter.My
             @Override
             public boolean onLongClick(View view) {
                 int pos = position;
-                editCityDialog(pos);
+                removeCityDialog(pos);
                 return true;
             }
         });
@@ -59,21 +59,13 @@ public class CustomCityAdapter extends RecyclerView.Adapter<CustomCityAdapter.My
         notifyDataSetChanged();
     }
 
-    public void edit(int position, String name){
-        CityData temp = cityDataList.get(position);
-        temp.setTitle(name);
-        cityDataList.set(position,temp);
-        notifyDataSetChanged();
-    }
 
-
-
-    public void editCityDialog(int pos){
+    public void removeCityDialog(int pos){
         Bundle args = new Bundle();
         args.putInt("pos",pos);
-        EditCityDialog editCityDialog = new EditCityDialog();
-        editCityDialog.setArguments(args);
-        editCityDialog.show(((FragmentActivity) mContext).getSupportFragmentManager(),"city_dialog");
+        RemoveCityDialog removeCityDialog = new RemoveCityDialog();
+        removeCityDialog.setArguments(args);
+        removeCityDialog.show(((FragmentActivity) mContext).getSupportFragmentManager(),"city_dialog");
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder{
