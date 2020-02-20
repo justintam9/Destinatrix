@@ -1,9 +1,7 @@
 package com.project.destinatrix;
 
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.view.View;
-import android.widget.AdapterView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -41,7 +39,7 @@ public class CityActivity extends AppCompatActivity implements AddCityDialog.cit
         });
     }
     public Integer getRandomImage(){
-        return images[(int)(Math.random()*(images.length)+1)];
+        return images[(int)(Math.random()*(images.length))];
     }
 
     public void addCityDialog(){
