@@ -98,7 +98,7 @@ public class TripListActivity extends AppCompatActivity implements AddTripDialog
     }
 
     public void editTexts(String name, String description, Integer pos) {
-        tripList.set(pos,new TripData(name,description,getRandomImage(),getCurrentTimeStamp()));
+        adapter.edit(pos,name,description);
     }
 
     public void addTripDialog(){
@@ -131,7 +131,7 @@ public class TripListActivity extends AppCompatActivity implements AddTripDialog
     }
 
     public Integer getRandomImage(){
-        return images[(int)(Math.random()*(images.length+1))];
+        return images[(int)(Math.random()*(images.length))];
     }
 
     public String getCurrentTimeStamp() {

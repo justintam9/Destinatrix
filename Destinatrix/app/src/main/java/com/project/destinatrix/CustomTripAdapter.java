@@ -33,6 +33,19 @@ public class CustomTripAdapter extends ArrayAdapter<String> {
         notifyDataSetChanged();
     }
 
+    public void edit(int position, String name, String description){
+        TripData temp = tripList.get(position);
+        if (name != null) {
+            temp.setTitle(name);
+        }
+        if (description != null){
+            temp.setDescription(description);
+        }
+        tripList.set(position,temp);
+        notifyDataSetChanged();
+    }
+
+
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {

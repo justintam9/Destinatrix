@@ -2,6 +2,7 @@ package com.project.destinatrix;
 
 
 import android.content.Context;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -34,13 +36,15 @@ public class CustomCityAdapter extends RecyclerView.Adapter<CustomCityAdapter.My
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MyViewHolder holder, final int position) {
         holder.city_title.setText(cityDataList.get(position).getTitle());
         holder.city_image.setImageResource(cityDataList.get(position).getImage());
-        holder.cardView.setOnClickListener(new View.OnClickListener() {
+        holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public void onClick(View view) {
-
+            public boolean onLongClick(View view) {
+                int pos = position;
+                editCityDialog(pos);
+                return true;
             }
         });
     }
@@ -48,6 +52,28 @@ public class CustomCityAdapter extends RecyclerView.Adapter<CustomCityAdapter.My
     @Override
     public int getItemCount() {
         return cityDataList.size();
+    }
+
+    public void remove(int position) {
+        cityDataList.remove(position);
+        notifyDataSetChanged();
+    }
+
+    public void edit(int position, String name){
+        CityData temp = cityDataList.get(position);
+        temp.setTitle(name);
+        cityDataList.set(position,temp);
+        notifyDataSetChanged();
+    }
+
+
+
+    public void editCityDialog(int pos){
+        Bundle args = new Bundle();
+        args.putInt("pos",pos);
+        EditCityDialog editCityDialog = new EditCityDialog();
+        editCityDialog.setArguments(args);
+        editCityDialog.show(((FragmentActivity) mContext).getSupportFragmentManager(),"city_dialog");
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder{
