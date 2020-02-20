@@ -98,7 +98,7 @@ public class TripListActivity extends AppCompatActivity implements AddTripDialog
     }
 
     public void editTexts(String name, String description, Integer pos) {
-        tripList.set(pos,new TripData(name,description,getRandomImage(),getCurrentTimeStamp()));
+        adapter.edit(pos,name,description);
     }
 
     public void addTripDialog(){
