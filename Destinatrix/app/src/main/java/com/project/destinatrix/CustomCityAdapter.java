@@ -31,7 +31,6 @@ public class CustomCityAdapter extends RecyclerView.Adapter<CustomCityAdapter.My
         LayoutInflater inflater = LayoutInflater.from(mContext);
         view = inflater.inflate(R.layout.cardview_city,parent,false);
 
-
         return new MyViewHolder(view);
     }
 
