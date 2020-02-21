@@ -1,0 +1,8 @@
+Duties: 
+- Team meeting to discuss and assign tasks (2h)
+- Create basic UI for registeration (2h)
+- Create logic for registration (4h)
+
+Achievments: 
+- Complited UI registration UI with Nadim 
+- Completed resigtration using email and password with Nadim 
