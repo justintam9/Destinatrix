@@ -4,5 +4,5 @@ Duties:
 - Create logic for registration (4h)
 
 Achievments: 
-- Complited UI registration UI with Nadim 
+- Completed the registration UI with Nadim 
 - Completed resigtration using email and password with Nadim 
