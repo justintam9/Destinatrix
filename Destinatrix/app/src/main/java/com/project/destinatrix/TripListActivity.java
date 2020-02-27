@@ -77,8 +77,9 @@ public class TripListActivity extends AppCompatActivity implements AddTripDialog
                 if (touchListener.existPendingDismisses()) {
                     touchListener.undoPendingDismiss();
                 } else {
-                    Intent mIntent = new Intent(TripListActivity.this, TripListActivity.class);
+                    Intent mIntent = new Intent(TripListActivity.this, CityActivity.class);
                     mIntent.putExtra("tripID",tripList.get(position).tripID);
+                    startActivity(mIntent);
                 }
             }
         });
