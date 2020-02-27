@@ -21,8 +21,8 @@ import java.util.ArrayList;
 
 public class DestinationList extends AppCompatActivity {
     ListView listView;
-    String[] NAMES = {"drake","josh"};
-    String[] DESCRIPTIONS = {"wow a description", "#anotherOne"};
+    String[] NAMES = {"Centre Pompidou ","Centre Pompidou"};
+    String[] DESCRIPTIONS = {"A modern art galery in Le Marais", "A modern art galery in Le Marais"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,12 +31,20 @@ public class DestinationList extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
+        /*FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+            }
+        });*/
+        FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Intent search = new Intent(this, SearchCityActivity.class);
+                //startActivity(search);
             }
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -77,7 +85,6 @@ public class DestinationList extends AppCompatActivity {
 //            imageView.setImageResource(IMAGES[i]);
             textView_name.setText(NAMES[i]);
             textView_description.setText(DESCRIPTIONS[i]);
-
 
             return view;
         }
