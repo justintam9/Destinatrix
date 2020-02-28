@@ -66,7 +66,7 @@ public class RegisterActivity extends AppCompatActivity {
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addUser(); // to call addUser method when clicking on the register button
+                addUser(emailId.getText().toString().trim()); // to call addUser method when clicking on the register button
                 String usr = userName.getText().toString();
                 String email = emailId.getText().toString();
                 String pwd = password.getText().toString();
@@ -92,7 +92,7 @@ public class RegisterActivity extends AppCompatActivity {
                                 Toast.makeText(RegisterActivity.this, getString(R.string.signUpFailMessage), Toast.LENGTH_SHORT).show();
                             }
                             else {
-                                startActivity(new Intent(RegisterActivity.this,HomeActivity.class));
+                                startActivity(new Intent(RegisterActivity.this,TripListActivity.class));
                             }
                         }
                     });
@@ -104,14 +104,6 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
-        tvSignIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(RegisterActivity.this,MainActivity.class);
-                startActivity(i);
-            }
-        });
-
         btnGoogleSignIn.setOnClickListener(v -> signInGoogle());
 
     }
@@ -119,6 +111,7 @@ public class RegisterActivity extends AppCompatActivity {
     private void signInGoogle() {
         Intent signIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signIntent, GOOGLE_SIGN);
+
     }
 
         @Override
@@ -130,7 +123,11 @@ public class RegisterActivity extends AppCompatActivity {
 
             try{
                 GoogleSignInAccount account = task.getResult(ApiException.class);
-                if(account != null) firebaseAuthWithGoogle(account);
+                if(account != null) {
+                    firebaseAuthWithGoogle(account);
+                    addUser(account.getEmail());
+                }
+
                     //make request firebase
 
             }catch(ApiException e){
@@ -162,9 +159,8 @@ public class RegisterActivity extends AppCompatActivity {
                 });
     }
 
-    private void addUser(){
+    private void addUser(String emailAddress){
         String name = userName.getText().toString().trim();
-        String emailAddress = emailId.getText().toString().trim();
 
         if(!TextUtils.isEmpty(name)){
 
