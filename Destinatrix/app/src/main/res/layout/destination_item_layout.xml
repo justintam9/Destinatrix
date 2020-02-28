@@ -2,45 +2,45 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:layout_marginBottom="5dp"
+    android:background="#ffffff"
+    android:padding="15dp">
     <TextView
         android:id="@+id/textDestinationName"
-        android:layout_width="271dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/imageView"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="50dp"
-        android:layout_marginTop="0dp"
-        android:layout_marginEnd="15dp"
-        android:layout_marginRight="0dp"
-        android:layout_toRightOf="@id/imageView"
-        android:text="TextView" />
+        android:layout_toEndOf="@+id/imageView"
+        android:paddingLeft="5dp"
+        android:textColor="#333"
+        android:textSize="22sp"
+        android:textStyle="bold" />
+
 
     <TextView
         android:id="@+id/textDestinationDescription"
-        android:layout_width="269dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/imageView"
+        android:paddingLeft="5dp"
+        android:layout_below="@+id/textDestinationName"
         android:layout_alignStart="@id/textDestinationName"
         android:layout_alignEnd="@+id/textDestinationName"
-        android:layout_alignBottom="@id/imageView"
-        android:layout_marginStart="0dp"
-        android:layout_marginEnd="2dp"
-        android:layout_marginBottom="-1dp"
-        android:text="TextView" />
+        android:textColor="#333"
+        android:textStyle="bold" />
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:padding="5dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginStart="0dp"
         android:layout_marginTop="0dp"
         android:adjustViewBounds="true"
-        android:scaleType="centerCrop"
+        android:scaleType="fitXY"
         android:src="@drawable/google_maps_thumbnail_example" />
-
-
 </RelativeLayout>
