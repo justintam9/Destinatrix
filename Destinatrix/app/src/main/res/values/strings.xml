@@ -14,7 +14,6 @@
     <string name="registerButtonLoginWithGoogle">Sign up with Google</string>
     <string name="registerAlreadyHaveAnAccountText">Already have an account? Sign in.</string>
     <string name="signUpFailMessage">Sign Up Unsuccessful, Please Try Again</string>
-    <!--    <string name="registerButtonSignIn"><u>Sign in.</u></string>-->
-
-
+    <string name="places_api_key">AIzaSyDV2gApr2cLHIxf6txDbekIAGoNy2GcVd0</string>
+    <string name="title_activity_destination_list">Destination List</string>
 </resources>
