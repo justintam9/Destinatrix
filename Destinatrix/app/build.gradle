@@ -34,4 +34,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:19.2.1'
     implementation 'com.google.android.gms:play-services-auth:17.0.0'
     implementation 'com.android.support:design:28.0.0'
+    // who knows if these are needed - just following a tutorial
+    implementation 'com.android.support:percent:28.0.0'
+    implementation 'com.android.support:cardview-v7:28.0.0'
+
 }
