@@ -7,5 +7,9 @@
     <string name="loginDontHaveAnAccountText">Don\'t have an account?</string>
     <string name="logo_added">logo added</string>
     <string name="loginButtonRegister"><u>Register.</u></string>
+<<<<<<< HEAD
     <string name="places_api_key">AIzaSyDV2gApr2cLHIxf6txDbekIAGoNy2GcVd0</string>
+=======
+    <string name="title_activity_destination_list">DestinationList</string>
+>>>>>>> dev
 </resources>
