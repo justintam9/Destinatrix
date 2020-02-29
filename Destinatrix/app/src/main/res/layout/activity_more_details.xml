@@ -193,19 +193,21 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 android:orientation="vertical">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="13sp"
                     android:textColor="#0d65a8"
-                    android:text="Email"/>
-                <TextView
+                    android:text="Rating"/>
+                <RatingBar
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="13sp"
-                    android:textColor="#000000"
-                    android:fontFamily="sans-serif-light"
-                    android:text="JohnDoe@gmail.com"/>
+                    android:numStars="5"
+                    android:stepSize=".5"
+                    android:progressTint="@color/yellow"
+                    style="@style/Widget.AppCompat.RatingBar.Indicator"
+                    android:rating="4.5" />
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
@@ -222,14 +224,15 @@
                     android:layout_height="wrap_content"
                     android:textSize="13sp"
                     android:textColor="#0d65a8"
-                    android:text="Email"/>
-                <TextView
+                    android:text="Notes"/>
+                <EditText
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="13sp"
                     android:textColor="#000000"
                     android:fontFamily="sans-serif-light"
-                    android:text="JohnDoe@gmail.com"/>
+                    android:background="@null"
+                    android:text="Notes"/>
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
