@@ -15,6 +15,30 @@
       },
       "oauth_client": [
         {
+          "client_id": "323876579322-p705vmbt95o0r33qr9qru6ccv3114ihj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.project.destinatrix",
+            "certificate_hash": "bea499d012b83750e1b18179a55d6abc81b53c9e"
+          }
+        },
+        {
+          "client_id": "323876579322-74thjfjmf8hnf0429qb7f941snq31t32.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.project.destinatrix",
+            "certificate_hash": "741158a0f2b1b044f28ebe425fdf6a5df1926aa2"
+          }
+        },
+        {
+          "client_id": "323876579322-u1r57lq8qd6tltrqnur6mmmalcfc18nu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.project.destinatrix",
+            "certificate_hash": "856675e448d5cfc67cd15c325f638fc1aee2b46e"
+          }
+        },
+        {
           "client_id": "323876579322-nbsbkdehiq92ncf7qen49vnjs1frqit9.apps.googleusercontent.com",
           "client_type": 3
         }
