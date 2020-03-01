@@ -57,6 +57,8 @@ public class LoginActivity extends AppCompatActivity {
         setOnclickListeners();
     }
 
+
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -83,6 +85,14 @@ public class LoginActivity extends AppCompatActivity {
                 } else {
                     updateUI(null);
                 }
+            }
+        });
+
+        registerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intToRegister = new Intent(LoginActivity.this,RegisterActivity.class);
+                startActivity(intToRegister);
             }
         });
 

@@ -1,0 +1,7 @@
+Duties:
+- Work on search place logic (4h)
+- Work on search place UI (3h)
+- Added and configured google places api to project (1h)
+
+Achievements:
+- Completed searching for place
