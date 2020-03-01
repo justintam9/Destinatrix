@@ -5,57 +5,61 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MoreDetailsActivity">
+
     <RelativeLayout
         android:id="@+id/rellay1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:background="#1391F1"
-        android:paddingBottom="20dp"
-        android:padding="5dp">
+        android:padding="5dp"
+        android:paddingBottom="20dp">
 
         <RelativeLayout
             android:id="@+id/imageDestination"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:background="@drawable/square"
-            android:layout_marginTop="20dp">
+            android:padding="5dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/square">
+
             <ImageView
                 android:layout_width="120dp"
                 android:layout_height="120dp"
                 android:layout_margin="0dp"
                 android:adjustViewBounds="true"
-                android:src="@drawable/stock_image1"
-                android:scaleType="centerInside"
                 android:contentDescription="TODO"
-                android:padding="3dp"
-                />
+
+                android:scaleType="centerCrop"
+                android:src="@drawable/eiffel_tower" />
         </RelativeLayout>
+
         <TextView
             android:id="@+id/destinationName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
             android:layout_below="@id/imageDestination"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15sp"
             android:fontFamily="sans-serif-light"
             android:text="Eiffel Tower"
-            android:layout_marginTop="15sp"
-            android:textSize="32sp"
-            android:textColor="#FFFFFF">
-        </TextView>
+            android:textColor="#FFFFFF"
+            android:textSize="32sp"></TextView>
+
         <TextView
             android:id="@+id/destinationCity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
             android:layout_below="@+id/destinationName"
-            android:fontFamily="sans-serif"
-            android:textAllCaps="true"
-            android:text="Paris, France"
+            android:layout_centerHorizontal="true"
             android:layout_marginTop="15sp"
-            android:textSize="16sp"
-            android:textColor="#0d65a8">
-        </TextView>
+            android:fontFamily="sans-serif"
+            android:text="Paris, France"
+            android:textAllCaps="true"
+            android:textColor="#0d65a8"
+            android:textSize="16sp"></TextView>
     </RelativeLayout>
 
     <LinearLayout
@@ -150,14 +154,16 @@
                     android:layout_height="wrap_content"
                     android:textSize="13sp"
                     android:textColor="#0d65a8"
-                    android:text="Email"/>
+                    android:text="Description"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="13sp"
                     android:textColor="#000000"
                     android:fontFamily="sans-serif-light"
-                    android:text="JohnDoe@gmail.com"/>
+                    android:text="The Eiffel Tower is a wrought-iron lattice tower on the Champ de Mars in Paris, France. It is named after the engineer Gustave Eiffel, whose company designed and built the tower.
+
+Constructed from 1887 to 1889 as the entrance to the 1889 World's Fair..."/>
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
@@ -174,14 +180,14 @@
                 android:layout_height="wrap_content"
                 android:textSize="13sp"
                 android:textColor="#0d65a8"
-                android:text="Email"/>
+                android:text="Hours"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="13sp"
                 android:textColor="#000000"
                 android:fontFamily="sans-serif-light"
-                android:text="JohnDoe@gmail.com"/>
+                android:text="Tuesday	9 a.m.–12:45 a.m."/>
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
