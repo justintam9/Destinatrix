@@ -1,0 +1,11 @@
+Duties: 
+- Complete Destination List UI (4h)
+- Complete More details UI	(4h)
+- Complete overview for next month (1h)
+- Work on logic for destination list (1h)
+
+Achievements:
+- Completed destination list UI
+- Completed More details UI
+- Completed overview for next month
+- Worked on logic for destination list

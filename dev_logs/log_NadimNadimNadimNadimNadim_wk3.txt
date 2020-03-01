@@ -1,5 +1,9 @@
 Duties: 
-- Complete registration logic (10h)
+- Complete the "Hello World" android app tutorial (4h)
+- Begin to get familiar with Firebase (1h)
+- Begin working on the logic behind registration for the app (3h)
 
 Achievements:
-- Completed registration logic with Essam
+- Completed android app tutorial
+- Read up on Firebase
+- Began planning for registration logic
