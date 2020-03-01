@@ -1,9 +1,7 @@
 package com.project.destinatrix;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -29,7 +27,7 @@ public class CityActivity extends AppCompatActivity implements RemoveCityDialog.
     ArrayList<CityData> cityList;
     Integer[] images = {R.drawable.stock_image1,R.drawable.stock_image2,R.drawable.stock_image3,R.drawable.stock_image4,R.drawable.stock_image5};
     CustomCityAdapter myAdapter;
-    RecyclerView view;
+    RecyclerView recyclerView;
 
     int AUTOCOMPLETE_REQUEST_CODE = 1;
     String TAG = "CityActivity";
@@ -41,15 +39,17 @@ public class CityActivity extends AppCompatActivity implements RemoveCityDialog.
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         cityList = new ArrayList<>();
-        view = findViewById(R.id.recyclerview_city);
+        recyclerView = findViewById(R.id.recyclerview_city);
 
         myAdapter = new CustomCityAdapter(this,cityList);
         cityList.add(new CityData("hi",getRandomImage()));
         cityList.add(new CityData("hi",getRandomImage()));
         cityList.add(new CityData("hi",getRandomImage()));
         cityList.add(new CityData("hi",getRandomImage()));
-        view.setLayoutManager(new GridLayoutManager(this,3));
-        view.setAdapter(myAdapter);
+        recyclerView.setLayoutManager(new GridLayoutManager(this,3));
+        recyclerView.setAdapter(myAdapter);
+
+
 
         setupOnClickListeners();
     }

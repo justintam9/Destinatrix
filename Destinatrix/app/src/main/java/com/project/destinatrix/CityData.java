@@ -1,6 +1,8 @@
 package com.project.destinatrix;
 
-public class CityData {
+import java.io.Serializable;
+
+public class CityData implements Serializable {
     private String title;
     private int image;
 

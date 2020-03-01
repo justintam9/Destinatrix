@@ -2,6 +2,7 @@ package com.project.destinatrix;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,6 +45,15 @@ public class CustomCityAdapter extends RecyclerView.Adapter<CustomCityAdapter.My
                 int pos = position;
                 removeCityDialog(pos);
                 return true;
+            }
+        });
+
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(mContext, DestinationMapAndListActivity.class);
+                intent.putExtra("CityActivity", cityDataList.get(position));
+                mContext.startActivity(intent);
             }
         });
     }
