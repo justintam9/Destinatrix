@@ -27,8 +27,8 @@ import java.util.ArrayList;
 
 public class DestinationList extends Fragment {
     ListView listView;
-    String[] NAMES = {"Centre Pompidou ","Centre Pompidou"};
-    String[] DESCRIPTIONS = {"A modern art galery in Le Marais", "A modern art galery in Le Marais"};
+    String[] NAMES = {"Eiffel Tower ","Centre Pompidou"};
+    String[] DESCRIPTIONS = {"The Eiffel Tower is a wrought-iron lattice tower on the Champ de Mars in Paris, France.", "A modern art galery in Le Marais"};
 
     @Nullable
     @Override

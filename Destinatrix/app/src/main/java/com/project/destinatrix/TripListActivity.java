@@ -41,6 +41,8 @@ public class TripListActivity extends AppCompatActivity implements AddTripDialog
         getSupportActionBar().setTitle("Trips");
 
         tripList = new ArrayList<>();
+        TripData europe = new TripData("Europe", "Summer 2020", getRandomImage(), "");
+        tripList.add(europe);
         list = findViewById(R.id.listview);
         adapter = new CustomTripAdapter(this, tripList);
         list.setAdapter(adapter);

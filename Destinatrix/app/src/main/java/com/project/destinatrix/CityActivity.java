@@ -42,10 +42,9 @@ public class CityActivity extends AppCompatActivity implements RemoveCityDialog.
         recyclerView = findViewById(R.id.recyclerview_city);
 
         myAdapter = new CustomCityAdapter(this,cityList);
-        cityList.add(new CityData("hi",getRandomImage()));
-        cityList.add(new CityData("hi",getRandomImage()));
-        cityList.add(new CityData("hi",getRandomImage()));
-        cityList.add(new CityData("hi",getRandomImage()));
+        cityList.add(new CityData("London",getRandomImage()));
+        cityList.add(new CityData("Madrid",getRandomImage()));
+        cityList.add(new CityData("Rome",getRandomImage()));
         recyclerView.setLayoutManager(new GridLayoutManager(this,3));
         recyclerView.setAdapter(myAdapter);
 
