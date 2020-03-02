@@ -1,8 +1,13 @@
 package com.project.destinatrix;
 
+import android.content.Intent;
 import android.media.Image;
 import android.os.Bundle;
 
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -18,11 +23,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class DestinationList extends AppCompatActivity {
     ListView listView;
     String[] NAMES = {"Centre Pompidou ","Centre Pompidou"};
     String[] DESCRIPTIONS = {"A modern art galery in Le Marais", "A modern art galery in Le Marais"};
+    int AUTOCOMPLETE_REQUEST_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,22 +39,20 @@ public class DestinationList extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        /*FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });*/
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Intent search = new Intent(this, SearchCityActivity.class);
-                //startActivity(search);
+                if (!Places.isInitialized()) {
+                    Places.initialize(getApplicationContext(), getString(R.string.places_api_key));
+                }
+                List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME);
+                Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
+                        .build(DestinationList.this);
+                startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
             }
         });
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         listView = (ListView)findViewById(R.id.listview);
         CustomAdapter customAdapter = new CustomAdapter();
@@ -54,7 +60,6 @@ public class DestinationList extends AppCompatActivity {
 
 
 
-//        ArrayAdapter arrayAdapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1,arrayList);
 
 
     }
