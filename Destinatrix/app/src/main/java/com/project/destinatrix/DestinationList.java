@@ -1,5 +1,6 @@
 package com.project.destinatrix;
 
+import android.content.Intent;
 import android.media.Image;
 import android.os.Bundle;
 
@@ -15,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
@@ -39,18 +41,17 @@ public class DestinationList extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 //        Toolbar toolbar = view.findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = view.findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Intent search = new Intent(this, SearchCityActivity.class);
-                //startActivity(search);
-            }
-        });
         listView = (ListView) view.findViewById(R.id.listview);
         CustomAdapter customAdapter = new CustomAdapter();
         listView.setAdapter(customAdapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent mIntent = new Intent(getContext(), MoreDetailsActivity.class);
+                startActivity(mIntent);
+            }
+        });
     }
 
     class CustomAdapter extends BaseAdapter {

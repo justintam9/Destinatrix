@@ -35,6 +35,9 @@
         <uses-library android:name="com.google.android.maps" />
 
         <activity
+            android:name=".MoreDetailsActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+        <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps"
             android:parentActivityName=".CityActivity">
