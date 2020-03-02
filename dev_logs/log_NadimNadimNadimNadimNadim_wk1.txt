@@ -1,8 +1,9 @@
 Duties: 
-- Prepare the use cases for the project proposal (5h)
-- Rehearse proposal presentation (1h)
-- Team meeting to discuss next steps (1h)
+- Meet with team and discuss roadmap for short term. (2h)
+- Read up on various options for developing app (3h)
+- Get set up with Git and Github
+- Download android studio (1h)
 
 Achievements: 
-- Submitted proposal
-- Presented proposal
+- Got set up with android studio
+- Joined git repo and got git installed

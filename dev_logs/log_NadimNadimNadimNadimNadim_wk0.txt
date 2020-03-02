@@ -1,9 +1,0 @@
-Duties: 
-- Meet with team and discuss roadmap for short term. (2h)
-- Read up on various options for developing app (3h)
-- Get set up with Git and Github
-- Download android studio (1h)
-
-Achievements: 
-- Got set up with android studio
-- Joined git repo and got git installed

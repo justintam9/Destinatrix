@@ -17,4 +17,10 @@
     <string name="places_api_key">AIzaSyDV2gApr2cLHIxf6txDbekIAGoNy2GcVd0</string>
     <string name="title_activity_destination_list">Destination List</string>
     <string name="title_activity_maps">Map</string>
+    <string name="title_activity_destination_map_and_list">DestinationMapAndListActivity</string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
+    <string name="destinations">Destinations</string>
+    <string name="map">Map</string>
+    <string name="list">List</string>
 </resources>
