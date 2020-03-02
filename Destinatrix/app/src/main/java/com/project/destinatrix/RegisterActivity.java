@@ -126,6 +126,7 @@ public class RegisterActivity extends AppCompatActivity {
                 if(account != null) {
                     firebaseAuthWithGoogle(account);
                     addUser(account.getEmail());
+                    startActivity(new Intent(RegisterActivity.this,TripListActivity.class));
                 }
 
                     //make request firebase
