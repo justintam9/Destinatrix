@@ -3,21 +3,37 @@ package com.project.destinatrix;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.google.android.gms.common.api.Status;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.AutocompleteActivity;
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
+import androidx.annotation.Nullable;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.project.destinatrix.ui.main.SectionsPagerAdapter;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class DestinationMapAndListActivity extends AppCompatActivity {
+
+    int AUTOCOMPLETE_REQUEST_CODE = 1;
+    String TAG = "DestinationMapAndListActivity";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,9 +62,34 @@ public class DestinationMapAndListActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                if (!Places.isInitialized()) {
+                    Places.initialize(getApplicationContext(), getString(R.string.places_api_key));
+                }
+                List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME);
+                Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
+                        .build(DestinationMapAndListActivity.this);
+                startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                Place place = Autocomplete.getPlaceFromIntent(data);
+                // TODO: Add to UI somehow
+
+                // TODO: ADD TO FIREBASE!
+
+            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+                Status status = Autocomplete.getStatusFromIntent(data);
+                Toast.makeText(this, "Error adding city", Toast.LENGTH_SHORT).show();
+            } else if (resultCode == RESULT_CANCELED) {
+                // cancelled
+                Log.i(TAG, "Cancelled search");
+            }
+        }
     }
 }

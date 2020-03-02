@@ -6,9 +6,13 @@ import android.os.Bundle;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -19,27 +23,24 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class DestinationList extends AppCompatActivity {
+public class DestinationList extends Fragment {
     ListView listView;
     String[] NAMES = {"Centre Pompidou ","Centre Pompidou"};
     String[] DESCRIPTIONS = {"A modern art galery in Le Marais", "A modern art galery in Le Marais"};
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_destination_list);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        /*FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });*/
-        FloatingActionButton fab = findViewById(R.id.fab);
+        return inflater.inflate(R.layout.activity_destination_list, null);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+//        Toolbar toolbar = view.findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
+
+        FloatingActionButton fab = view.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -47,17 +48,11 @@ public class DestinationList extends AppCompatActivity {
                 //startActivity(search);
             }
         });
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        listView = (ListView)findViewById(R.id.listview);
+        listView = (ListView) view.findViewById(R.id.listview);
         CustomAdapter customAdapter = new CustomAdapter();
         listView.setAdapter(customAdapter);
-
-
-
-//        ArrayAdapter arrayAdapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1,arrayList);
-
-
     }
+
     class CustomAdapter extends BaseAdapter {
 
         @Override

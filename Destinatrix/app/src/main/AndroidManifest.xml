@@ -40,6 +40,7 @@
             android:parentActivityName=".CityActivity">
         </activity>
 
+
         <activity
             android:name=".CityActivity"
             android:parentActivityName=".TripListActivity" />

@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
+import com.project.destinatrix.DestinationList;
+import com.project.destinatrix.MapsActivity;
 import com.project.destinatrix.R;
 
 /**
@@ -29,7 +31,16 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         // getItem is called to instantiate the fragment for the given page.
         // Return a PlaceholderFragment (defined as a static inner class below).
-        return PlaceholderFragment.newInstance(position + 1);
+        Fragment fragment = null;
+        switch (position) {
+            case 0:
+                fragment = new MapsActivity();
+                break;
+            case 1:
+                fragment = new DestinationList();
+                break;
+        }
+        return fragment;
     }
 
     @Nullable

@@ -2,15 +2,24 @@ package com.project.destinatrix;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.AsyncTask;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -40,21 +49,40 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends SupportMapFragment implements OnMapReadyCallback {
+
+    private boolean needsInit=false;
 
     private GoogleMap mMap;
     private static final int LOCATION_REQUEST = 500;
     ArrayList<LatLng> listPoints;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_maps);
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(MapsActivity.this);
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        if (savedInstanceState == null) {
+            needsInit=true;
+        }
         listPoints = new ArrayList<>();
+        getMapAsync(this);
     }
+
+//    @Nullable
+//    @Override
+//    public View onViewC(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+//        SupportMapFragment mapFragment = (SupportMapFragment) getActivity().getSupportFragmentManager()
+//                .findFragmentById(R.id.map);
+//        mapFragment.getMapAsync(MapsActivity.this);
+//        listPoints = new ArrayList<>();
+//        return inflater.inflate(R.layout.activity_maps, container, false);
+//    }
+//
+//    @Override
+//    public void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//
+//    }
 
     /**
      * Manipulates the map once available.
@@ -69,8 +97,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.getUiSettings().setZoomControlsEnabled(true);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST);
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST);
             return;
         }
         mMap.setMyLocationEnabled(true);
@@ -243,7 +271,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             if (polylineOptions != null) {
                 mMap.addPolyline(polylineOptions);
             } else {
-                Toast.makeText(getApplicationContext(), "Direction not found!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Direction not found!", Toast.LENGTH_SHORT).show();
             }
 
         }
