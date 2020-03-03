@@ -49,10 +49,8 @@ public class DestinationList extends Fragment {
 //        setSupportActionBar(toolbar);
         listView = (ListView) view.findViewById(R.id.listview);
         customAdapter = new CustomAdapter();
-        names.add("Eiffel Tower ");
         names.add("Centre Pompidou");
-        descriptions.add("The Eiffel Tower is a wrought-iron lattice tower on the Champ de Mars in Paris, France.");
-        descriptions.add("A modern art gallery in Le Marais");
+        descriptions.add("Place Georges-Pompidou, 75004 Paris, France");
         listView.setAdapter(customAdapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

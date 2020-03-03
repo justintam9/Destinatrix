@@ -80,7 +80,6 @@ public class DestinationMapAndListActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 Place place = Autocomplete.getPlaceFromIntent(data);
                 // TODO: Add to UI somehow
-                System.out.println("here");
                 System.out.println(place);
                 sectionsPagerAdapter.setItem(place.getName(),place.getAddress(),place.getLatLng());
                 // TODO: ADD TO FIREBASE!
