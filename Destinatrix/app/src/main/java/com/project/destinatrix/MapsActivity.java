@@ -136,6 +136,14 @@ public class MapsActivity extends SupportMapFragment implements OnMapReadyCallba
 
     }
 
+    public void setMarker(String name, LatLng latlng){
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(latlng);
+        markerOptions.title(name);
+        mMap.animateCamera(CameraUpdateFactory.newLatLng(latlng));
+        mMap.addMarker(markerOptions);
+    }
+
     private String getRequestUrl(LatLng origin, LatLng dest) {
         //Value of origin
         String str_org = "origin=" + origin.latitude + "," + origin.longitude;

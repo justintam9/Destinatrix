@@ -27,9 +27,15 @@ import java.util.ArrayList;
 
 public class DestinationList extends Fragment {
     ListView listView;
-    String[] NAMES = {"Eiffel Tower ","Centre Pompidou"};
-    String[] DESCRIPTIONS = {"The Eiffel Tower is a wrought-iron lattice tower on the Champ de Mars in Paris, France.", "A modern art galery in Le Marais"};
-
+    ArrayList<String> names = new ArrayList<String>();
+    ArrayList<String> descriptions = new ArrayList<String>();
+    CustomAdapter customAdapter;
+    public void setDestination(String name, String address){
+        names.add(name);
+        descriptions.add(address);
+        listView.setAdapter(customAdapter);
+        customAdapter.notifyDataSetChanged();
+    }
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -42,7 +48,11 @@ public class DestinationList extends Fragment {
 //        Toolbar toolbar = view.findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
         listView = (ListView) view.findViewById(R.id.listview);
-        CustomAdapter customAdapter = new CustomAdapter();
+        customAdapter = new CustomAdapter();
+        names.add("Eiffel Tower ");
+        names.add("Centre Pompidou");
+        descriptions.add("The Eiffel Tower is a wrought-iron lattice tower on the Champ de Mars in Paris, France.");
+        descriptions.add("A modern art gallery in Le Marais");
         listView.setAdapter(customAdapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -58,7 +68,7 @@ public class DestinationList extends Fragment {
 
         @Override
         public int getCount() {
-            return NAMES.length; // SIZE OF THE DATA
+            return names.size(); // SIZE OF THE DATA
         }
 
         @Override
@@ -79,8 +89,8 @@ public class DestinationList extends Fragment {
             TextView textView_description = (TextView)view.findViewById(R.id.textDestinationDescription);
 
 //            imageView.setImageResource(IMAGES[i]);
-            textView_name.setText(NAMES[i]);
-            textView_description.setText(DESCRIPTIONS[i]);
+            textView_name.setText(names.get(i));
+            textView_description.setText(descriptions.get(i));
 
             return view;
         }

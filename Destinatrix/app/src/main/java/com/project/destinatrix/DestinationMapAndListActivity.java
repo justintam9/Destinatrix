@@ -30,7 +30,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class DestinationMapAndListActivity extends AppCompatActivity {
-
+    SectionsPagerAdapter sectionsPagerAdapter;
     int AUTOCOMPLETE_REQUEST_CODE = 1;
     String TAG = "DestinationMapAndListActivity";
 
@@ -40,7 +40,7 @@ public class DestinationMapAndListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_destination_map_and_list);
 
-        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
+        sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
         ViewPager viewPager = findViewById(R.id.view_pager);
         viewPager.setAdapter(sectionsPagerAdapter);
         TabLayout tabs = findViewById(R.id.tabs);
@@ -65,7 +65,7 @@ public class DestinationMapAndListActivity extends AppCompatActivity {
                 if (!Places.isInitialized()) {
                     Places.initialize(getApplicationContext(), getString(R.string.places_api_key));
                 }
-                List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME);
+                List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME,Place.Field.ADDRESS,Place.Field.LAT_LNG);
                 Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
                         .build(DestinationMapAndListActivity.this);
                 startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
@@ -80,7 +80,9 @@ public class DestinationMapAndListActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 Place place = Autocomplete.getPlaceFromIntent(data);
                 // TODO: Add to UI somehow
-
+                System.out.println("here");
+                System.out.println(place);
+                sectionsPagerAdapter.setItem(place.getName(),place.getAddress(),place.getLatLng());
                 // TODO: ADD TO FIREBASE!
 
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {

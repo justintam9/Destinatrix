@@ -47,7 +47,8 @@
         <activity
             android:name=".CityActivity"
             android:parentActivityName=".TripListActivity" />
-        <activity android:name=".TripListActivity" />
+        <activity android:name=".TripListActivity">
+        </activity>
         <activity
             android:name=".RegisterActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
@@ -55,15 +56,11 @@
             android:name=".DestinationMapAndListActivity"
             android:label="@string/title_activity_destination_map_and_list"
             android:parentActivityName=".CityActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
         <activity
             android:name=".LoginActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
     </application>
 

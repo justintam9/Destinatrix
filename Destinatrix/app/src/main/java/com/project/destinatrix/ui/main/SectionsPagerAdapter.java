@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.project.destinatrix.DestinationList;
 import com.project.destinatrix.MapsActivity;
 import com.project.destinatrix.R;
@@ -21,12 +22,17 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     @StringRes
     private static final int[] TAB_TITLES = new int[]{R.string.map, R.string.list};
     private final Context mContext;
+    MapsActivity map = new MapsActivity();
+    DestinationList list = new DestinationList();
 
     public SectionsPagerAdapter(Context context, FragmentManager fm) {
         super(fm);
         mContext = context;
     }
-
+    public void setItem(String name, String address, LatLng latlng){
+        list.setDestination(name,address);
+        map.setMarker(name, latlng);
+    }
     @Override
     public Fragment getItem(int position) {
         // getItem is called to instantiate the fragment for the given page.
@@ -34,11 +40,9 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         Fragment fragment = null;
         switch (position) {
             case 0:
-                fragment = new MapsActivity();
-                break;
+                return map;
             case 1:
-                fragment = new DestinationList();
-                break;
+                return list;
         }
         return fragment;
     }
