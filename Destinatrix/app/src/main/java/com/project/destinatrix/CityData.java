@@ -1,12 +1,14 @@
 package com.project.destinatrix;
 
+import android.graphics.Bitmap;
+
 import java.io.Serializable;
 
 public class CityData implements Serializable {
     private String title;
-    private int image;
+    private Bitmap image;
 
-    public CityData(String title, int image) {
+    public CityData(String title, Bitmap image) {
         this.title = title;
         this.image = image;
     }
@@ -15,7 +17,7 @@ public class CityData implements Serializable {
         this.title = title;
     }
 
-    public void setImage(int image) {
+    public void setImage(Bitmap image) {
         this.image = image;
     }
 
@@ -23,7 +25,7 @@ public class CityData implements Serializable {
         return title;
     }
 
-    public int getImage() {
+    public Bitmap getImage() {
         return image;
     }
 }

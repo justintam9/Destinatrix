@@ -1,6 +1,7 @@
 package com.project.destinatrix;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,9 +12,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.PhotoMetadata;
 import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.net.FetchPhotoRequest;
+import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
@@ -28,6 +33,7 @@ public class CityActivity extends AppCompatActivity implements RemoveCityDialog.
     Integer[] images = {R.drawable.stock_image1,R.drawable.stock_image2,R.drawable.stock_image3,R.drawable.stock_image4,R.drawable.stock_image5};
     CustomCityAdapter myAdapter;
     RecyclerView recyclerView;
+    PlacesClient placesClient;
 
     int AUTOCOMPLETE_REQUEST_CODE = 1;
     String TAG = "CityActivity";
@@ -40,11 +46,11 @@ public class CityActivity extends AppCompatActivity implements RemoveCityDialog.
 
         cityList = new ArrayList<>();
         recyclerView = findViewById(R.id.recyclerview_city);
-
+        if (!Places.isInitialized()) {
+            Places.initialize(getApplicationContext(), getString(R.string.places_api_key));
+            placesClient = com.google.android.libraries.places.api.Places.createClient(this);
+        }
         myAdapter = new CustomCityAdapter(this,cityList);
-        cityList.add(new CityData("London",getRandomImage()));
-        cityList.add(new CityData("Madrid",getRandomImage()));
-        cityList.add(new CityData("Rome",getRandomImage()));
         recyclerView.setLayoutManager(new GridLayoutManager(this,3));
         recyclerView.setAdapter(myAdapter);
 
@@ -58,19 +64,12 @@ public class CityActivity extends AppCompatActivity implements RemoveCityDialog.
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!Places.isInitialized()) {
-                    Places.initialize(getApplicationContext(), getString(R.string.places_api_key));
-                }
-                List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME);
+                List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.PHOTO_METADATAS);
                 Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
                         .build(CityActivity.this);
                 startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
             }
         });
-    }
-
-    private Integer getRandomImage() {
-        return images[(int)(Math.random()*(images.length))];
     }
 
     public void remove(Integer pos) {
@@ -83,8 +82,29 @@ public class CityActivity extends AppCompatActivity implements RemoveCityDialog.
         if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 Place place = Autocomplete.getPlaceFromIntent(data);
-                CityData city = new CityData(place.getName(), getRandomImage());
-                cityList.add(city);
+                PhotoMetadata photoMetadata = place.getPhotoMetadatas().get(0);
+                // Get the attribution text.
+                String attributions = photoMetadata.getAttributions();
+
+                // Create a FetchPhotoRequest.
+                FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata)
+                        .setMaxWidth(500) // Optional.
+                        .setMaxHeight(300) // Optional.
+                        .build();
+                placesClient.fetchPhoto(photoRequest).addOnSuccessListener((fetchPhotoResponse) -> {
+                    Bitmap bitmap = fetchPhotoResponse.getBitmap();
+                    CityData city = new CityData(place.getName(), bitmap);
+                    cityList.add(city);
+                }).addOnFailureListener((exception) -> {
+                    if (exception instanceof ApiException) {
+                        ApiException apiException = (ApiException) exception;
+                        int statusCode = apiException.getStatusCode();
+                        CityData city = new CityData(place.getName(), null);
+                        cityList.add(city);
+                        // Handle error with given status code.
+                        Log.e(TAG, "Place not found: " + exception.getMessage());
+                    }
+                });
                 myAdapter.notifyDataSetChanged();
 
                 // TODO: ADD TO FIREBASE!
