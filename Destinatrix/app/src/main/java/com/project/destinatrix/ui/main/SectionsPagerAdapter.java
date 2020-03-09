@@ -35,7 +35,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     }
     public void setItem(String ID, String name, String address, LatLng latlng, Bitmap photo){
         list.setDestination(ID, name, address, photo);
-        map.setMarker(name, latlng);
+        map.setMarker(name, latlng, ID);
     }
     @Override
     public Fragment getItem(int position) {
