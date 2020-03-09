@@ -26,14 +26,14 @@
             android:background="@drawable/square">
 
             <ImageView
+                android:id="@+id/image"
                 android:layout_width="120dp"
                 android:layout_height="120dp"
                 android:layout_margin="0dp"
                 android:adjustViewBounds="true"
                 android:contentDescription="TODO"
 
-                android:scaleType="centerCrop"
-                android:src="@drawable/eiffel_tower" />
+                android:scaleType="centerCrop" />
         </RelativeLayout>
 
         <TextView
@@ -194,12 +194,12 @@ Constructed from 1887 to 1889 as the entrance to the 1889 World's Fair..."/>
                 android:textColor="#0d65a8"
                 android:text="Hours"/>
             <TextView
+                android:id="@+id/hours"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="13sp"
                 android:textColor="#000000"
-                android:fontFamily="sans-serif-light"
-                android:text="Tuesday	9 a.m.–12:45 a.m."/>
+                android:fontFamily="sans-serif-light" />
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
@@ -219,6 +219,7 @@ Constructed from 1887 to 1889 as the entrance to the 1889 World's Fair..."/>
                     android:textColor="#0d65a8"
                     android:text="Rating"/>
                 <RatingBar
+                    android:id="@+id/rating"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:numStars="5"
@@ -250,7 +251,7 @@ Constructed from 1887 to 1889 as the entrance to the 1889 World's Fair..."/>
                     android:textColor="#000000"
                     android:fontFamily="sans-serif-light"
                     android:background="@null"
-                    android:text="Notes"/>
+                    android:text=""/>
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"

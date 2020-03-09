@@ -10,7 +10,10 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.libraries.places.api.model.AddressComponent;
+import com.google.android.libraries.places.api.model.AddressComponents;
 import com.google.android.libraries.places.api.model.PhotoMetadata;
+import com.project.destinatrix.DestinationData;
 import com.project.destinatrix.DestinationList;
 import com.project.destinatrix.MapsActivity;
 import com.project.destinatrix.R;
@@ -33,9 +36,9 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         super(fm);
         mContext = context;
     }
-    public void setItem(String ID, String name, String address, LatLng latlng, Bitmap photo){
-        list.setDestination(ID, name, address, photo);
-        map.setMarker(name, latlng, ID);
+    public void setItem(DestinationData data){
+        list.setDestination(data);
+        map.setMarker(data);
     }
     @Override
     public Fragment getItem(int position) {

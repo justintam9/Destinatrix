@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.AsyncTask;
@@ -36,6 +37,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.libraries.places.api.model.AddressComponent;
+import com.google.android.libraries.places.api.model.AddressComponents;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,6 +47,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -125,11 +129,9 @@ public class MapsActivity extends SupportMapFragment implements OnMapReadyCallba
             public boolean onMarkerClick(final Marker marker) {
                 System.out.println("here");
                 // Retrieve the data from the marker.
-                String ID =  (String)marker.getTag();
+                DestinationData data =  (DestinationData)marker.getTag();
                 Intent mIntent = new Intent(getContext(), MoreDetailsActivity.class);
-                Bundle b = new Bundle();
-                b.putString("id", ID);
-                mIntent.putExtras(b);
+                mIntent.putExtra("id",data.getID());
                 startActivity(mIntent);
 
                 // Return false to indicate that we have not consumed the event and that we wish
@@ -141,13 +143,13 @@ public class MapsActivity extends SupportMapFragment implements OnMapReadyCallba
     }
 
 
-    public void setMarker(String name, LatLng latlng, String ID){
+    public void setMarker(DestinationData data){
         MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(latlng);
-        markerOptions.title(name);
-        mMap.animateCamera(CameraUpdateFactory.newLatLng(latlng));
+        markerOptions.position(data.getLatlng());
+        markerOptions.title(data.getName());
+        mMap.animateCamera(CameraUpdateFactory.newLatLng(data.getLatlng()));
         Marker marker = mMap.addMarker(markerOptions);
-        marker.setTag(ID);
+        marker.setTag(data);
 
     }
 

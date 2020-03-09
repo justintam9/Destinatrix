@@ -2,41 +2,36 @@ package com.project.destinatrix;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.media.Image;
 import android.os.Bundle;
-
-import com.google.android.libraries.places.api.model.PhotoMetadata;
-import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.api.net.FetchPlaceRequest;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.PhotoMetadata;
+import com.google.android.libraries.places.api.net.FetchPhotoRequest;
+import com.google.android.libraries.places.api.net.PlacesClient;
+
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class DestinationList extends Fragment {
     ListView listView;
     ArrayList<DestinationData> destinations = new ArrayList<>();
     CustomAdapter customAdapter;
     Integer[] images = {R.drawable.stock_image1,R.drawable.stock_image2,R.drawable.stock_image3,R.drawable.stock_image4,R.drawable.stock_image5};
-    public void setDestination(String ID, String name, String address, Bitmap photo){
-        DestinationData data = new DestinationData(ID,name,photo,address);
-        System.out.println("add");
+    PlacesClient placesClient;
+    public void setDestination(DestinationData data){
         destinations.add(data);
         listView.setAdapter(customAdapter);
         customAdapter.notifyDataSetChanged();
@@ -44,7 +39,10 @@ public class DestinationList extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
+        if (!Places.isInitialized()) {
+            Places.initialize(getContext(), getString(R.string.places_api_key));
+            placesClient = com.google.android.libraries.places.api.Places.createClient(getContext());
+        }
         return inflater.inflate(R.layout.activity_destination_list, null);
     }
 
@@ -60,6 +58,7 @@ public class DestinationList extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent mIntent = new Intent(getContext(), MoreDetailsActivity.class);
+                mIntent.putExtra("id", destinations.get(i).getID());
                 startActivity(mIntent);
             }
         });
@@ -92,16 +91,15 @@ public class DestinationList extends Fragment {
             TextView textView_name = (TextView)view.findViewById(R.id.textDestinationName);
             TextView textView_address = (TextView)view.findViewById(R.id.textDestinationDescription);
 
-            if (destinations.get(i).getPhoto() == null) {
-                imageView.setImageResource(getRandomImage());
-            }
-            else {
-                imageView.setImageBitmap(destinations.get(i).getPhoto());
-            }
+            imageView.setImageBitmap(destinations.get(i).getPhoto());
             textView_name.setText(destinations.get(i).getName());
             textView_address.setText(destinations.get(i).getAddress());
+
+
+
             return view;
         }
     }
+
 
 }

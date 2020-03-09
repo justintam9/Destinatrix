@@ -70,7 +70,8 @@ public class DestinationMapAndListActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME,Place.Field.ADDRESS,Place.Field.LAT_LNG,Place.Field.PHOTO_METADATAS);
+                List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME,Place.Field.ADDRESS, Place.Field.ADDRESS_COMPONENTS,
+                        Place.Field.LAT_LNG,Place.Field.PHOTO_METADATAS,Place.Field.OPENING_HOURS,Place.Field.RATING);
                 Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
                         .build(DestinationMapAndListActivity.this);
                 startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
@@ -97,12 +98,14 @@ public class DestinationMapAndListActivity extends AppCompatActivity {
                         .build();
                 placesClient.fetchPhoto(photoRequest).addOnSuccessListener((fetchPhotoResponse) -> {
                     Bitmap bitmap = fetchPhotoResponse.getBitmap();
-                    sectionsPagerAdapter.setItem(place.getId(),place.getName(),place.getAddress(),place.getLatLng(),bitmap);
+                    DestinationData ddata = new DestinationData(place.getId(),place.getName(),bitmap,place.getLatLng(),place.getAddress(),place.getAddressComponents(),place.getOpeningHours(),place.getRating());
+                    sectionsPagerAdapter.setItem(ddata);
                 }).addOnFailureListener((exception) -> {
                     if (exception instanceof ApiException) {
                         ApiException apiException = (ApiException) exception;
                         int statusCode = apiException.getStatusCode();
-                        sectionsPagerAdapter.setItem(place.getId(),place.getName(),place.getAddress(),place.getLatLng(),null);
+                        DestinationData ddata = new DestinationData(place.getId(),place.getName(),null,place.getLatLng(),place.getAddress(),place.getAddressComponents(),place.getOpeningHours(),place.getRating());
+                        sectionsPagerAdapter.setItem(ddata);
                         // Handle error with given status code.
                         Log.e(TAG, "Place not found: " + exception.getMessage());
                     }

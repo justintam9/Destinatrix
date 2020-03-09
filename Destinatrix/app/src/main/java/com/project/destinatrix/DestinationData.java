@@ -1,26 +1,65 @@
 package com.project.destinatrix;
 
+import java.io.Serializable;
+
 import android.graphics.Bitmap;
-import android.provider.ContactsContract;
+import android.widget.ImageView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.AddressComponents;
+import com.google.android.libraries.places.api.model.OpeningHours;
 import com.google.android.libraries.places.api.model.PhotoMetadata;
 
-public class DestinationData {
-    private String ID;
-    private String name;
-    private LatLng latlng;
-    private Bitmap photo;
-    private String address;
+public class DestinationData extends AppCompatActivity implements Serializable {
+    public String ID;
+    public String name;
+    public LatLng latlng;
+    public Bitmap photo;
+    public String address;
+    public AddressComponents addressComponents;
+    public OpeningHours hours;
+    public Double rating;
 
-    public DestinationData(String ID, String name, Bitmap photo, String address){
+    public DestinationData(){
+
+    }
+    public DestinationData(String ID, String name, Bitmap photo, LatLng latlng, String address, AddressComponents addressComponents, OpeningHours hours, Double rating){
         this.ID = ID;
         this.name = name;
         this.latlng = latlng;
         this.photo = photo;
         this.address = address;
+        this.addressComponents = addressComponents;
+        this.hours = hours;
+        this.rating = rating;
     }
 
+    public OpeningHours getHours() {
+        return hours;
+    }
+
+    public void setHours(OpeningHours hours) {
+        this.hours = hours;
+    }
+
+    public Double getRating() {
+        return rating;
+    }
+
+    public void setRating(Double rating) {
+        this.rating = rating;
+    }
+
+    public AddressComponents getAddressComponents() {
+        return addressComponents;
+    }
+
+    public void setAddressComponents(AddressComponents addressComponents) {
+        this.addressComponents = addressComponents;
+    }
 
     public String getID() {
         return ID;
@@ -61,4 +100,12 @@ public class DestinationData {
     public void setAddress(String address) {
         this.address = address;
     }
+    public void print(){
+        System.out.println ("ID ="+ID);
+        System.out.println ("Name = "+name);
+        System.out.println ("address" + address);
+        System.out.println ("address components" + addressComponents);
+    }
+
+
 }
