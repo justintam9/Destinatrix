@@ -1,0 +1,7 @@
+Duties:
+-Work on trip Logic (4h)
+-Work on city UI (4h)
+-Work on city Logic (5h)
+
+Achievements:
+-Finish trip logic, city UI, city Logic

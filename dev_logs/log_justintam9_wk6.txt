@@ -1,0 +1,7 @@
+Duties:
+-find google map api (0.5h)
+-work on Map UI and small logic(4h)
+-prepare demo and write summary (1h)
+
+Achievements:
+-finished map
