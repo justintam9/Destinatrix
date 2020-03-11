@@ -1,0 +1,7 @@
+Duties:
+- Connect all components of app together (4h)
+- Prepare app with dummy date for demo (1h)
+- Deliverable 2 report (1h)
+
+Achievements:
+- Prepared app on time for demo
