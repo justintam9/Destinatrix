@@ -18,6 +18,7 @@ import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.project.destinatrix.ui.main.GridSpacingItemDecoration;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,7 +46,12 @@ public class CityActivity extends AppCompatActivity implements RemoveCityDialog.
         cityList.add(new CityData("London",getRandomImage()));
         cityList.add(new CityData("Madrid",getRandomImage()));
         cityList.add(new CityData("Rome",getRandomImage()));
-        recyclerView.setLayoutManager(new GridLayoutManager(this,3));
+        cityList.add(new CityData("Ottawa",getRandomImage()));
+        int spanCount = 2; // 2 columns
+        int spacing = 75; // 75px
+        boolean includeEdge = true;
+        recyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, includeEdge));
+        recyclerView.setLayoutManager(new GridLayoutManager(this,2));
         recyclerView.setAdapter(myAdapter);
 
 
