@@ -1,4 +1,4 @@
-package com.project.destinatrix;
+package com.project.destinatrix.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,7 +16,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -26,11 +25,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GoogleAuthCredential;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.DatabaseReference;
+import com.project.destinatrix.DataAction;
+import com.project.destinatrix.R;
+import com.project.destinatrix.objects.UserData;
+import com.project.destinatrix.FirebaseDatabaseHelper;
 
 public class RegisterActivity extends AppCompatActivity {
     EditText emailId, password, userName;
@@ -38,8 +39,8 @@ public class RegisterActivity extends AppCompatActivity {
     TextView tvSignIn;//,googleSignIn;
     FirebaseAuth mFireBaseAuth;
     GoogleSignInClient mGoogleSignInClient;
-    DatabaseReference databaseUsers;
     static final int GOOGLE_SIGN = 123;
+    FirebaseDatabaseHelper fbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +54,7 @@ public class RegisterActivity extends AppCompatActivity {
         tvSignIn = findViewById(R.id.registerSignInText);
         btnSignUp = findViewById(R.id.register_button_register);
         btnGoogleSignIn = findViewById(R.id.google_button_register);
-        databaseUsers = FirebaseDatabase.getInstance().getReference("users");
+        fbHelper = new FirebaseDatabaseHelper("users");
 
         GoogleSignInOptions gso = new GoogleSignInOptions.
                 Builder()
@@ -66,7 +67,7 @@ public class RegisterActivity extends AppCompatActivity {
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addUser(emailId.getText().toString().trim()); // to call addUser method when clicking on the register button
+
                 String usr = userName.getText().toString();
                 String email = emailId.getText().toString();
                 String pwd = password.getText().toString();
@@ -92,7 +93,8 @@ public class RegisterActivity extends AppCompatActivity {
                                 Toast.makeText(RegisterActivity.this, getString(R.string.signUpFailMessage), Toast.LENGTH_SHORT).show();
                             }
                             else {
-                                startActivity(new Intent(RegisterActivity.this,TripListActivity.class));
+                                addUser(emailId.getText().toString().trim(), task.getResult().getUser().getUid()); // to call addUser method when clicking on the register button
+                                startActivity(new Intent(RegisterActivity.this, TripListActivity.class));
                             }
                         }
                     });
@@ -105,6 +107,7 @@ public class RegisterActivity extends AppCompatActivity {
         });
 
         btnGoogleSignIn.setOnClickListener(v -> signInGoogle());
+
 
     }
 
@@ -125,12 +128,7 @@ public class RegisterActivity extends AppCompatActivity {
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 if(account != null) {
                     firebaseAuthWithGoogle(account);
-                    addUser(account.getEmail());
-                    startActivity(new Intent(RegisterActivity.this,TripListActivity.class));
                 }
-
-                    //make request firebase
-
             }catch(ApiException e){
                 e.printStackTrace();
             }
@@ -145,31 +143,23 @@ public class RegisterActivity extends AppCompatActivity {
         mFireBaseAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, task -> {
                     if(task.isSuccessful()){
-                        Log.d("TAG", "signin success");
-
                         FirebaseUser user = mFireBaseAuth.getCurrentUser();
-                       // updateUI(user);
-                    }
-
-                    else{
+                        addUser(account.getEmail(), user.getUid());
+                        startActivity(new Intent(RegisterActivity.this,TripListActivity.class));
+                    } else {
                         Log.w("TAG", "signin failure", task.getException());
-
                         Toast.makeText(this, "Signin Failed!", Toast.LENGTH_SHORT).show();
-                       // updateUI(null);
                     }
                 });
     }
 
-    private void addUser(String emailAddress){
+    private void addUser(String emailAddress, String id){
         String name = userName.getText().toString().trim();
 
         if(!TextUtils.isEmpty(name)){
 
-            String id = databaseUsers.push().getKey();
-
-            User user = new User(name, emailAddress, id);
-
-            databaseUsers.child(id).setValue(user);
+            UserData user = new UserData(name, emailAddress, id);
+            fbHelper.createData(user, DataAction.UserData);
 
             Toast.makeText(this, "User added", Toast.LENGTH_LONG).show();
 

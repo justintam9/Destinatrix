@@ -1,14 +1,17 @@
-package com.project.destinatrix;
+package com.project.destinatrix.objects;
 
-public class User {
+import com.google.firebase.database.IgnoreExtraProperties;
 
-    public String name, email, id;
+@IgnoreExtraProperties
+public class UserData {
 
-    public User(){
+    private String name, email, id;
+
+    public UserData(){
 
     }
 
-    public User(String name, String email, String id) {
+    public UserData(String name, String email, String id) {
         this.name = name;
         this.email = email;
         this.id = id;

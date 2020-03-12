@@ -1,4 +1,4 @@
-package com.project.destinatrix;
+package com.project.destinatrix.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,16 +18,26 @@ import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.project.destinatrix.CustomCityAdapter;
+import com.project.destinatrix.DataAction;
+import com.project.destinatrix.FirebaseDatabaseHelper;
+import com.project.destinatrix.R;
+import com.project.destinatrix.ReadCallback;
+import com.project.destinatrix.RemoveCityDialog;
+import com.project.destinatrix.objects.CityData;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class CityActivity extends AppCompatActivity implements RemoveCityDialog.cityDialogListener{
+public class CityActivity extends AppCompatActivity implements RemoveCityDialog.cityDialogListener {
     ArrayList<CityData> cityList;
     Integer[] images = {R.drawable.stock_image1,R.drawable.stock_image2,R.drawable.stock_image3,R.drawable.stock_image4,R.drawable.stock_image5};
     CustomCityAdapter myAdapter;
     RecyclerView recyclerView;
+    String tripId;
+    FirebaseDatabaseHelper dbHelper;
+    FirebaseDatabaseHelper dbHelperForRead;
 
     int AUTOCOMPLETE_REQUEST_CODE = 1;
     String TAG = "CityActivity";
@@ -40,14 +50,20 @@ public class CityActivity extends AppCompatActivity implements RemoveCityDialog.
 
         cityList = new ArrayList<>();
         recyclerView = findViewById(R.id.recyclerview_city);
+        tripId = getIntent().getStringExtra("tripID");
+        dbHelper = new FirebaseDatabaseHelper("cities");
+        dbHelperForRead = new FirebaseDatabaseHelper("cities/" + tripId);
 
-        myAdapter = new CustomCityAdapter(this,cityList);
-        cityList.add(new CityData("London",getRandomImage()));
-        cityList.add(new CityData("Madrid",getRandomImage()));
-        cityList.add(new CityData("Rome",getRandomImage()));
         recyclerView.setLayoutManager(new GridLayoutManager(this,3));
-        recyclerView.setAdapter(myAdapter);
 
+        dbHelperForRead.readData(DataAction.CityData, new ReadCallback() {
+            @Override
+            public void onCallBack(ArrayList<Object> list) {
+                CityActivity.this.cityList = (ArrayList<CityData>) (ArrayList<?>)list;
+                CityActivity.this.myAdapter = new CustomCityAdapter(CityActivity.this,CityActivity.this.cityList);
+                CityActivity.this.recyclerView.setAdapter(CityActivity.this.myAdapter);
+            }
+        });
 
 
         setupOnClickListeners();
@@ -61,7 +77,7 @@ public class CityActivity extends AppCompatActivity implements RemoveCityDialog.
                 if (!Places.isInitialized()) {
                     Places.initialize(getApplicationContext(), getString(R.string.places_api_key));
                 }
-                List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME);
+                List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG);
                 Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
                         .build(CityActivity.this);
                 startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
@@ -83,11 +99,13 @@ public class CityActivity extends AppCompatActivity implements RemoveCityDialog.
         if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 Place place = Autocomplete.getPlaceFromIntent(data);
-                CityData city = new CityData(place.getName(), getRandomImage());
+                String cityId = dbHelper.getDataId();
+                CityData city = new CityData(place.getName(), getRandomImage(), tripId, cityId, place.getLatLng());
                 cityList.add(city);
                 myAdapter.notifyDataSetChanged();
 
                 // TODO: ADD TO FIREBASE!
+                dbHelper.createData(city, DataAction.CityData);
 
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 Status status = Autocomplete.getStatusFromIntent(data);

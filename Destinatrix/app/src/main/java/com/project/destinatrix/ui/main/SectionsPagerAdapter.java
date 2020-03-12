@@ -10,7 +10,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.project.destinatrix.DestinationList;
-import com.project.destinatrix.MapsActivity;
+import com.project.destinatrix.Activities.MapsActivity;
 import com.project.destinatrix.R;
 
 /**

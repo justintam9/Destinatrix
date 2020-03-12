@@ -1,4 +1,4 @@
-package com.project.destinatrix;
+package com.project.destinatrix.Activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -34,6 +34,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.project.destinatrix.DirectionsParser;
+import com.project.destinatrix.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;

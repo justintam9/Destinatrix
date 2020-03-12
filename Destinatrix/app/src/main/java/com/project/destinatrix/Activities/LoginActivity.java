@@ -1,4 +1,4 @@
-package com.project.destinatrix;
+package com.project.destinatrix.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,6 +24,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.api.ApiException;
+import com.project.destinatrix.R;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -91,7 +92,7 @@ public class LoginActivity extends AppCompatActivity {
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intToRegister = new Intent(LoginActivity.this,RegisterActivity.class);
+                Intent intToRegister = new Intent(LoginActivity.this, RegisterActivity.class);
                 startActivity(intToRegister);
             }
         });
