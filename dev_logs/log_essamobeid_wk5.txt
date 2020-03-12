@@ -1,0 +1,8 @@
+Duties: 
+- Team meeting (1h)
+- Create a UML diagram of the project (4h)
+- Work on the documentation and demo (2h)
+
+Achievements:
+- Finished UML diagram 
+- Finished documentation and demoed our app

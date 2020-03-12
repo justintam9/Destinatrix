@@ -1,0 +1,7 @@
+Duties:
+-connect map and destination list data (2h)
+-add to destination list logic and display on map (3h)
+
+Achievements:
+-presented demo
+-destination list and map are linked
