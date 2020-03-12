@@ -20,6 +20,7 @@ import java.util.List;
 public class CustomCityAdapter extends RecyclerView.Adapter<CustomCityAdapter.MyViewHolder> {
     private Context mContext;
     private List<CityData> cityDataList;
+    Integer[] images = {R.drawable.stock_image1,R.drawable.stock_image2,R.drawable.stock_image3,R.drawable.stock_image4,R.drawable.stock_image5};
 
     public CustomCityAdapter(Context mContext, List<CityData> cityDataList){
         this.mContext=mContext;
@@ -38,7 +39,12 @@ public class CustomCityAdapter extends RecyclerView.Adapter<CustomCityAdapter.My
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, final int position) {
         holder.city_title.setText(cityDataList.get(position).getTitle());
-        holder.city_image.setImageResource(cityDataList.get(position).getImage());
+        if (cityDataList.get(position).getImage() == null){
+            holder.city_image.setImageResource(getRandomImage());
+        }
+        else {
+            holder.city_image.setImageBitmap(cityDataList.get(position).getImage());
+        }
         holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
@@ -66,6 +72,9 @@ public class CustomCityAdapter extends RecyclerView.Adapter<CustomCityAdapter.My
     public void remove(int position) {
         cityDataList.remove(position);
         notifyDataSetChanged();
+    }
+    private Integer getRandomImage() {
+        return images[(int)(Math.random()*(images.length))];
     }
 
 

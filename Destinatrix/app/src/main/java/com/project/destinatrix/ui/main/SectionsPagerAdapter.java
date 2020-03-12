@@ -1,6 +1,7 @@
 package com.project.destinatrix.ui.main;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
@@ -9,9 +10,12 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.libraries.places.api.model.PhotoMetadata;
 import com.project.destinatrix.DestinationList;
 import com.project.destinatrix.MapsActivity;
 import com.project.destinatrix.R;
+
+import java.util.List;
 
 /**
  * A [FragmentPagerAdapter] that returns a fragment corresponding to
@@ -29,9 +33,9 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         super(fm);
         mContext = context;
     }
-    public void setItem(String name, String address, LatLng latlng){
-        list.setDestination(name,address);
-        map.setMarker(name, latlng);
+    public void setItem(String ID, String name, String address, LatLng latlng, Bitmap photo){
+        list.setDestination(ID, name, address, photo);
+        map.setMarker(name, latlng, ID);
     }
     @Override
     public Fragment getItem(int position) {
