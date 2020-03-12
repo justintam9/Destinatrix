@@ -1,6 +1,7 @@
 package com.project.destinatrix.Activities;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,9 +12,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.PhotoMetadata;
 import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.net.FetchPhotoRequest;
+import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
@@ -25,6 +30,7 @@ import com.project.destinatrix.R;
 import com.project.destinatrix.ReadCallback;
 import com.project.destinatrix.RemoveCityDialog;
 import com.project.destinatrix.objects.CityData;
+import com.project.destinatrix.ui.main.GridSpacingItemDecoration;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,6 +44,7 @@ public class CityActivity extends AppCompatActivity implements RemoveCityDialog.
     String tripId;
     FirebaseDatabaseHelper dbHelper;
     FirebaseDatabaseHelper dbHelperForRead;
+    PlacesClient placesClient;
 
     int AUTOCOMPLETE_REQUEST_CODE = 1;
     String TAG = "CityActivity";
@@ -54,7 +61,16 @@ public class CityActivity extends AppCompatActivity implements RemoveCityDialog.
         dbHelper = new FirebaseDatabaseHelper("cities");
         dbHelperForRead = new FirebaseDatabaseHelper("cities/" + tripId);
 
-        recyclerView.setLayoutManager(new GridLayoutManager(this,3));
+        if (!Places.isInitialized()) {
+            Places.initialize(getApplicationContext(), getString(R.string.places_api_key));
+            placesClient = com.google.android.libraries.places.api.Places.createClient(this);
+        }
+
+        int spanCount = 2; // 2 columns
+        int spacing = 75; // 75px
+        boolean includeEdge = true;
+        recyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, includeEdge));
+        recyclerView.setLayoutManager(new GridLayoutManager(this,2));
 
         dbHelperForRead.readData(DataAction.CityData, new ReadCallback() {
             @Override
@@ -74,19 +90,12 @@ public class CityActivity extends AppCompatActivity implements RemoveCityDialog.
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!Places.isInitialized()) {
-                    Places.initialize(getApplicationContext(), getString(R.string.places_api_key));
-                }
-                List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG);
+                List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.PHOTO_METADATAS, Place.Field.LAT_LNG);
                 Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
                         .build(CityActivity.this);
                 startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
             }
         });
-    }
-
-    private Integer getRandomImage() {
-        return images[(int)(Math.random()*(images.length))];
     }
 
     public void remove(Integer pos) {
@@ -100,12 +109,35 @@ public class CityActivity extends AppCompatActivity implements RemoveCityDialog.
             if (resultCode == RESULT_OK) {
                 Place place = Autocomplete.getPlaceFromIntent(data);
                 String cityId = dbHelper.getDataId();
-                CityData city = new CityData(place.getName(), getRandomImage(), tripId, cityId, place.getLatLng());
-                cityList.add(city);
-                myAdapter.notifyDataSetChanged();
+                // cityList.add(city);
+                PhotoMetadata photoMetadata = place.getPhotoMetadatas().get(0);
+                // Get the attribution text.
+                String attributions = photoMetadata.getAttributions();
 
-                // TODO: ADD TO FIREBASE!
-                dbHelper.createData(city, DataAction.CityData);
+                // Create a FetchPhotoRequest.
+                FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata)
+                        .setMaxWidth(500) // Optional.
+                        .setMaxHeight(300) // Optional.
+                        .build();
+                placesClient.fetchPhoto(photoRequest).addOnSuccessListener((fetchPhotoResponse) -> {
+                    Bitmap bitmap = fetchPhotoResponse.getBitmap();
+                    CityData city = new CityData(place.getName(), bitmap, CityActivity.this.tripId, cityId, place.getLatLng());
+                    cityList.add(city);
+                    myAdapter.notifyDataSetChanged();
+                    dbHelper.createData(city, DataAction.CityData);
+                }).addOnFailureListener((exception) -> {
+                    if (exception instanceof ApiException) {
+                        ApiException apiException = (ApiException) exception;
+                        int statusCode = apiException.getStatusCode();
+                        CityData city = new CityData(place.getName(), null, CityActivity.this.tripId, cityId, place.getLatLng());
+                        cityList.add(city);
+                        myAdapter.notifyDataSetChanged();
+                        dbHelper.createData(city, DataAction.CityData);
+                        // Handle error with given status code.
+                        Log.e(TAG, "Place not found: " + exception.getMessage());
+                    }
+                });
+//                myAdapter.notifyDataSetChanged();
 
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 Status status = Autocomplete.getStatusFromIntent(data);

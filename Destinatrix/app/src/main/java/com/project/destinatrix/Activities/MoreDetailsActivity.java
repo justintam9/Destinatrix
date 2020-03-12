@@ -14,6 +14,9 @@ public class MoreDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_more_details);
+        Bundle b = getIntent().getExtras();
+        if(b != null)
+            System.out.println(b.getString("id"));
 
         Button close = findViewById(R.id.more_details_close);
         close.setOnClickListener(new View.OnClickListener() {

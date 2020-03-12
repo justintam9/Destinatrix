@@ -4,6 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.project.destinatrix.Activities.MoreDetailsActivity;
+import android.graphics.Bitmap;
+import android.media.Image;
+
+import com.google.android.libraries.places.api.model.PhotoMetadata;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.net.FetchPlaceRequest;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,12 +30,13 @@ import java.util.ArrayList;
 
 public class DestinationList extends Fragment {
     ListView listView;
-    ArrayList<String> names = new ArrayList<String>();
-    ArrayList<String> descriptions = new ArrayList<String>();
+    ArrayList<DestinationData> destinations = new ArrayList<>();
     CustomAdapter customAdapter;
-    public void setDestination(String name, String address){
-        names.add(name);
-        descriptions.add(address);
+    Integer[] images = {R.drawable.stock_image1,R.drawable.stock_image2,R.drawable.stock_image3,R.drawable.stock_image4,R.drawable.stock_image5};
+    public void setDestination(String ID, String name, String address, Bitmap photo){
+        DestinationData data = new DestinationData(ID,name,photo,address);
+        System.out.println("add");
+        destinations.add(data);
         listView.setAdapter(customAdapter);
         customAdapter.notifyDataSetChanged();
     }
@@ -44,8 +53,6 @@ public class DestinationList extends Fragment {
 //        setSupportActionBar(toolbar);
         listView = (ListView) view.findViewById(R.id.listview);
         customAdapter = new CustomAdapter();
-        names.add("Centre Pompidou");
-        descriptions.add("Place Georges-Pompidou, 75004 Paris, France");
         listView.setAdapter(customAdapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -56,12 +63,15 @@ public class DestinationList extends Fragment {
             }
         });
     }
+    public Integer getRandomImage(){
+        return images[(int)(Math.random()*(images.length))];
+    }
 
     class CustomAdapter extends BaseAdapter {
 
         @Override
         public int getCount() {
-            return names.size(); // SIZE OF THE DATA
+            return destinations.size(); // SIZE OF THE DATA
         }
 
         @Override
@@ -79,12 +89,16 @@ public class DestinationList extends Fragment {
             view = getLayoutInflater().inflate(R.layout.destination_item_layout,null);
             ImageView imageView = (ImageView)view.findViewById(R.id.imageView);
             TextView textView_name = (TextView)view.findViewById(R.id.textDestinationName);
-            TextView textView_description = (TextView)view.findViewById(R.id.textDestinationDescription);
+            TextView textView_address = (TextView)view.findViewById(R.id.textDestinationDescription);
 
-//            imageView.setImageResource(IMAGES[i]);
-            textView_name.setText(names.get(i));
-            textView_description.setText(descriptions.get(i));
-
+            if (destinations.get(i).getPhoto() == null) {
+                imageView.setImageResource(getRandomImage());
+            }
+            else {
+                imageView.setImageBitmap(destinations.get(i).getPhoto());
+            }
+            textView_name.setText(destinations.get(i).getName());
+            textView_address.setText(destinations.get(i).getAddress());
             return view;
         }
     }

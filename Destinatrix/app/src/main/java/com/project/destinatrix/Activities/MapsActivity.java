@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
@@ -30,6 +31,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -70,21 +72,6 @@ public class MapsActivity extends SupportMapFragment implements OnMapReadyCallba
         getMapAsync(this);
     }
 
-//    @Nullable
-//    @Override
-//    public View onViewC(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-//        SupportMapFragment mapFragment = (SupportMapFragment) getActivity().getSupportFragmentManager()
-//                .findFragmentById(R.id.map);
-//        mapFragment.getMapAsync(MapsActivity.this);
-//        listPoints = new ArrayList<>();
-//        return inflater.inflate(R.layout.activity_maps, container, false);
-//    }
-//
-//    @Override
-//    public void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//
-//    }
 
     /**
      * Manipulates the map once available.
@@ -135,15 +122,35 @@ public class MapsActivity extends SupportMapFragment implements OnMapReadyCallba
                 }
             }
         });
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(final Marker marker) {
+                System.out.println("here");
+                // Retrieve the data from the marker.
+                String ID =  (String)marker.getTag();
+                Intent mIntent = new Intent(getContext(), MoreDetailsActivity.class);
+                Bundle b = new Bundle();
+                b.putString("id", ID);
+                mIntent.putExtras(b);
+                startActivity(mIntent);
 
+                // Return false to indicate that we have not consumed the event and that we wish
+                // for the default behavior to occur (which is for the camera to move such that the
+                // marker is centered and for the marker's info window to open, if it has one).
+                return false;
+            }
+        });
     }
 
-    public void setMarker(String name, LatLng latlng){
+
+    public void setMarker(String name, LatLng latlng, String ID){
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latlng);
         markerOptions.title(name);
         mMap.animateCamera(CameraUpdateFactory.newLatLng(latlng));
-        mMap.addMarker(markerOptions);
+        Marker marker = mMap.addMarker(markerOptions);
+        marker.setTag(ID);
+
     }
 
     private String getRequestUrl(LatLng origin, LatLng dest) {
@@ -214,6 +221,7 @@ public class MapsActivity extends SupportMapFragment implements OnMapReadyCallba
                 break;
         }
     }
+
 
     public class TaskRequestDirections extends AsyncTask<String, Void, String> {
 
