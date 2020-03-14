@@ -42,21 +42,19 @@ public class DestinationList extends Fragment {
     public void setDestination(String placeId) {
         List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME,Place.Field.ADDRESS, Place.Field.PHOTO_METADATAS);
         FetchPlaceRequest request = FetchPlaceRequest.newInstance(placeId, fields);
-        DestinationData data = new DestinationData();
+
         placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
             Place place = response.getPlace();
-            Bitmap photo = getPhoto(place);
+            DestinationData data = new DestinationData();
             data.setName(place.getName());
+            data.setID(place.getId());
             data.setAddress(place.getAddress());
-            data.setPhoto(photo);
+            getPhoto(place, data);
         }).addOnFailureListener((exception) -> {
             if (exception instanceof ApiException) {
                 ApiException apiException = (ApiException) exception;
             }
         });
-        destinations.add(data);
-        listView.setAdapter(customAdapter);
-        customAdapter.notifyDataSetChanged();
     }
 
     @Nullable
@@ -122,24 +120,30 @@ public class DestinationList extends Fragment {
         }
     }
 
-    public Bitmap getPhoto(Place place) {
+    public void getPhoto(Place place, DestinationData data) {
         // Get the photo metadata.
         PhotoMetadata photoMetadata = place.getPhotoMetadatas().get(0);
         // Get the attribution text.
         String attributions = photoMetadata.getAttributions();
-        final Bitmap[] bitmap = {null};
         // Create a FetchPhotoRequest.
         FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata)
                 .setMaxWidth(500) // Optional.
                 .setMaxHeight(300) // Optional.
                 .build();
         placesClient.fetchPhoto(photoRequest).addOnSuccessListener((fetchPhotoResponse) -> {
-            bitmap[0] = fetchPhotoResponse.getBitmap();
+            Bitmap bitmap = fetchPhotoResponse.getBitmap();
+            data.setPhoto(bitmap);
+            addToList(place, data);
         }).addOnFailureListener((exception) -> {
             if (exception instanceof ApiException) {
                 ApiException apiException = (ApiException) exception;
             }
         });
-        return bitmap[0];
+    }
+
+    public void addToList(Place place, DestinationData data){
+        destinations.add(data);
+        listView.setAdapter(customAdapter);
+        customAdapter.notifyDataSetChanged();
     }
 }
