@@ -3,8 +3,12 @@ package com.project.destinatrix.Activities;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -15,7 +19,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.AddressComponent;
 import com.google.android.libraries.places.api.model.PhotoMetadata;
@@ -27,27 +34,43 @@ import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 
 import com.project.destinatrix.R;
+import com.project.destinatrix.objects.DestinationData;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 public class MoreDetailsActivity extends AppCompatActivity {
     public PlacesClient placesClient;
     int AUTOCOMPLETE_REQUEST_CODE = 1;
     String TAG = "MoreDetailsActivity";
+    private GoogleApiClient googleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        System.out.println(getString(R.string.places_api_key));
+
         Places.initialize(getApplicationContext(), getString(R.string.places_api_key));
         placesClient = Places.createClient(this);
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_more_details);
         Intent intent = this.getIntent();
         String id = getIntent().getExtras().getString("id");
         System.out.println(id);
-        List<Place.Field> fields = Arrays.asList(Place.Field.NAME, Place.Field.ADDRESS, Place.Field.ADDRESS_COMPONENTS, Place.Field.PHOTO_METADATAS, Place.Field.OPENING_HOURS, Place.Field.RATING);
+        List<Place.Field> fields = Arrays.asList(Place.Field.NAME, Place.Field.LAT_LNG,Place.Field.ADDRESS, Place.Field.ADDRESS_COMPONENTS, Place.Field.PHOTO_METADATAS, Place.Field.OPENING_HOURS, Place.Field.RATING);
         FetchPlaceRequest request = FetchPlaceRequest.newInstance(id, fields);
 
         placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
@@ -75,6 +98,7 @@ public class MoreDetailsActivity extends AppCompatActivity {
 
     public void make(DestinationData data) {
         ImageView img_view = findViewById(R.id.image);
+        TextView address_view = findViewById(R.id.address);
         TextView name_view = findViewById(R.id.destinationName);
         TextView city_view = findViewById(R.id.destinationCity);
         TextView hours_view = findViewById(R.id.hours);
@@ -88,27 +112,66 @@ public class MoreDetailsActivity extends AppCompatActivity {
         for (int i = 0; i < addressComponents.size(); i++) {
             List types = addressComponents.get(i).getTypes();
             for (int j = 0; j < types.size(); j++) {
-                if (types.get(j) == "administrative_area_level_1") {
+                if (types.get(j).equals("administrative_area_level_1")) {
                     state = addressComponents.get(i).getName();
                 }
-                if (types.get(j) == "locality") {
+                if (types.get(j).equals("locality")) {
                     city = addressComponents.get(i).getName();
                 }
-                if (types.get(j) == "country") {
+                if (types.get(j).equals("country")) {
                     country = addressComponents.get(i).getName();
                 }
             }
         }
-        fullCity = city + state + country;
 
-        double d = data.getRating();
-        float rating = (float) d;
+        fullCity = city +", "+ state +", " + country;
+        if (data.getRating() != null) {
+            double d = data.getRating();
+            float rating = (float) d;
+            rating_view.setRating(rating);
+            System.out.println(rating);
+        }
+        else{
+            rating_view.setRating(0);
+        }
+
+        String hours = "";
+        List<String> listHours = data.getHours().getWeekdayText();
+        for (int i = 0; i < listHours.size(); i++){
+            hours = hours + listHours.get(i) + "\n";
+        }
+        //TODO fix arrival time
+        /*LocationManager locationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
+        String locationProvider = LocationManager.NETWORK_PROVIDER;
+        @SuppressLint("MissingPermission") android.location.Location lastKnownLocation = locationManager.getLastKnownLocation(locationProvider);
+        double userLat = lastKnownLocation.getLatitude();
+        double userLong = lastKnownLocation.getLongitude();
+        LatLng current = new LatLng(userLat, userLong);
+        String urlString = getDirectionsUrl(current,data.getLatlng());
+        Document doc = null;
+        HttpURLConnection urlConnection = null;
+        URL url = null;
+        try {
+
+            url = new URL(urlString.toString());
+            System.out.println(url);
+            urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setRequestMethod("GET");
+            BufferedReader rd = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+            String line;
+            StringBuilder result = new StringBuilder();
+            while ((line = rd.readLine()) != null) {
+                result.append(line);
+            }
+            rd.close();
+        } catch (Exception e) {
+        }*/
 
         img_view.setImageBitmap(data.getPhoto());
+        address_view.setText(data.getAddress());
         name_view.setText(data.getName());
         city_view.setText(fullCity);
-        hours_view.setText(data.getHours().toString());
-        rating_view.setRating(rating);
+        hours_view.setText(hours);
     }
 
     protected void getPhoto(Place place) {
@@ -137,5 +200,19 @@ public class MoreDetailsActivity extends AppCompatActivity {
             }
         });
 
+    }
+    private String getDirectionsUrl(LatLng origin, LatLng dest) {
+
+        String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
+
+        String str_dest = "destination=" + dest.latitude + "," + dest.longitude;
+
+        String key = "key=" + getString(R.string.places_api_key);
+
+        String parameters = str_origin + "&" + str_dest + "&" + key;
+
+        String output = "json";
+
+        return "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters;
     }
 }

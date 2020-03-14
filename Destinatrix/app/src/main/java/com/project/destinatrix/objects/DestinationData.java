@@ -1,4 +1,4 @@
-package com.project.destinatrix;
+package com.project.destinatrix.objects;
 
 import java.io.Serializable;
 

@@ -24,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -37,13 +38,16 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-<<<<<<< HEAD:Destinatrix/app/src/main/java/com/project/destinatrix/MapsActivity.java
+import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.AddressComponent;
 import com.google.android.libraries.places.api.model.AddressComponents;
-=======
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.net.FetchPlaceRequest;
+import com.google.android.libraries.places.api.net.PlacesClient;
 import com.project.destinatrix.DirectionsParser;
 import com.project.destinatrix.R;
->>>>>>> origin/firebase:Destinatrix/app/src/main/java/com/project/destinatrix/Activities/MapsActivity.java
+import com.project.destinatrix.objects.DestinationData;
+
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -57,6 +61,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -67,9 +72,11 @@ public class MapsActivity extends SupportMapFragment implements OnMapReadyCallba
     private GoogleMap mMap;
     private static final int LOCATION_REQUEST = 500;
     ArrayList<LatLng> listPoints;
-
+    PlacesClient placesClient;
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        Places.initialize(getContext(), getString(R.string.places_api_key));
+        placesClient = com.google.android.libraries.places.api.Places.createClient(getContext());
         super.onViewCreated(view, savedInstanceState);
 
         if (savedInstanceState == null) {
@@ -148,13 +155,26 @@ public class MapsActivity extends SupportMapFragment implements OnMapReadyCallba
     }
 
 
-    public void setMarker(DestinationData data){
+    public void setMarker(String placeId){
+        List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME,Place.Field.LAT_LNG);
+        FetchPlaceRequest request = FetchPlaceRequest.newInstance(placeId, fields);
         MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(data.getLatlng());
-        markerOptions.title(data.getName());
-        mMap.animateCamera(CameraUpdateFactory.newLatLng(data.getLatlng()));
-        Marker marker = mMap.addMarker(markerOptions);
-        marker.setTag(data);
+        placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
+            Place place = response.getPlace();
+            markerOptions.position(place.getLatLng());
+            markerOptions.title(place.getName());
+            mMap.animateCamera(CameraUpdateFactory.newLatLng(place.getLatLng()));
+            Marker marker = mMap.addMarker(markerOptions);
+            DestinationData data = new DestinationData();
+            data.setID(place.getId());
+            data.setName(place.getName());
+            data.setLatlng(place.getLatLng());
+            marker.setTag(data);
+        }).addOnFailureListener((exception) -> {
+            if (exception instanceof ApiException) {
+                ApiException apiException = (ApiException) exception;
+            }
+        });
 
     }
 

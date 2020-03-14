@@ -1,7 +1,6 @@
 package com.project.destinatrix.ui.main;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
@@ -9,16 +8,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.libraries.places.api.model.AddressComponent;
-import com.google.android.libraries.places.api.model.AddressComponents;
-import com.google.android.libraries.places.api.model.PhotoMetadata;
-import com.project.destinatrix.DestinationData;
 import com.project.destinatrix.DestinationList;
 import com.project.destinatrix.Activities.MapsActivity;
 import com.project.destinatrix.R;
-
-import java.util.List;
 
 /**
  * A [FragmentPagerAdapter] that returns a fragment corresponding to
@@ -36,9 +28,9 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         super(fm);
         mContext = context;
     }
-    public void setItem(DestinationData data){
-        list.setDestination(data);
-        map.setMarker(data);
+    public void setItem(String placeId){
+        list.setDestination(placeId);
+        map.setMarker(placeId);
     }
     @Override
     public Fragment getItem(int position) {
