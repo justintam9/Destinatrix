@@ -9,12 +9,14 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.project.destinatrix.objects.TripData;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 public class CustomTripAdapter extends ArrayAdapter<String> {
-    ArrayList<TripData>  tripList;
+    public ArrayList<TripData>  tripList;
     Context context;
     public CustomTripAdapter(Activity context, ArrayList<TripData> tripList){
         super (context, R.layout.triplist_row);
@@ -64,9 +66,9 @@ public class CustomTripAdapter extends ArrayAdapter<String> {
         }
 
         TripData trip = tripList.get(position);
-        viewHolder.title.setText(trip.title);
-        viewHolder.des.setText(trip.description);
-        viewHolder.imag.setImageResource(trip.image);
+        viewHolder.title.setText(trip.getTitle());
+        viewHolder.des.setText(trip.getDescription());
+        viewHolder.imag.setImageResource(trip.getImage());
         return convertView;
 
     }

@@ -1,4 +1,4 @@
-package com.project.destinatrix;
+package com.project.destinatrix.Activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -37,8 +37,13 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+<<<<<<< HEAD:Destinatrix/app/src/main/java/com/project/destinatrix/MapsActivity.java
 import com.google.android.libraries.places.api.model.AddressComponent;
 import com.google.android.libraries.places.api.model.AddressComponents;
+=======
+import com.project.destinatrix.DirectionsParser;
+import com.project.destinatrix.R;
+>>>>>>> origin/firebase:Destinatrix/app/src/main/java/com/project/destinatrix/Activities/MapsActivity.java
 
 import org.json.JSONException;
 import org.json.JSONObject;

@@ -10,6 +10,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.project.destinatrix.Activities.DestinationMapAndListActivity;
+import com.project.destinatrix.objects.CityData;
+
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.FragmentActivity;
@@ -43,7 +46,7 @@ public class CustomCityAdapter extends RecyclerView.Adapter<CustomCityAdapter.My
             holder.city_image.setImageResource(getRandomImage());
         }
         else {
-            holder.city_image.setImageBitmap(cityDataList.get(position).getImage());
+            holder.city_image.setImageBitmap(cityDataList.get(position).getEncodedImage());
         }
         holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override

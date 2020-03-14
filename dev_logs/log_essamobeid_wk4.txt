@@ -1,0 +1,7 @@
+Duties: 
+- Team meeting to discuss and assign tasks (1h)
+- Create registration using Google account (3h)
+- Create User database model and connect it to firebase (4h)
+
+Achievements: 
+- Finished registration with Google account and store user info in firebase.

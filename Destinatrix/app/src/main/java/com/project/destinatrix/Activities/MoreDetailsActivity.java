@@ -1,4 +1,4 @@
-package com.project.destinatrix;
+package com.project.destinatrix.Activities;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,6 +29,8 @@ import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 
 import java.util.Arrays;
 import java.util.List;
+
+import com.project.destinatrix.R;
 
 public class MoreDetailsActivity extends AppCompatActivity {
     public PlacesClient placesClient;

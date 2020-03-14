@@ -1,8 +1,12 @@
 package com.project.destinatrix;
 
 import android.content.Intent;
+import android.os.Bundle;
+
+import com.project.destinatrix.Activities.MoreDetailsActivity;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.media.Image;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;

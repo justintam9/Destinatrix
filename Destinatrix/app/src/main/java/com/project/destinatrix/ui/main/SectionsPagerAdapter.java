@@ -15,7 +15,7 @@ import com.google.android.libraries.places.api.model.AddressComponents;
 import com.google.android.libraries.places.api.model.PhotoMetadata;
 import com.project.destinatrix.DestinationData;
 import com.project.destinatrix.DestinationList;
-import com.project.destinatrix.MapsActivity;
+import com.project.destinatrix.Activities.MapsActivity;
 import com.project.destinatrix.R;
 
 import java.util.List;
