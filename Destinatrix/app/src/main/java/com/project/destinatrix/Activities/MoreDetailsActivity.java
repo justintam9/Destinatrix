@@ -1,14 +1,18 @@
 package com.project.destinatrix.Activities;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -23,6 +27,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.AddressComponent;
 import com.google.android.libraries.places.api.model.PhotoMetadata;
@@ -34,19 +39,27 @@ import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
+import com.project.destinatrix.DirectionsParser;
 import com.project.destinatrix.R;
 import com.project.destinatrix.objects.DestinationData;
 import javax.xml.parsers.DocumentBuilder;
@@ -105,67 +118,26 @@ public class MoreDetailsActivity extends AppCompatActivity {
         RatingBar rating_view = findViewById(R.id.rating);
 
         List<AddressComponent> addressComponents = data.getAddressComponents().asList();
-        String state = "";
-        String country = "";
-        String city = "";
-        String fullCity;
-        for (int i = 0; i < addressComponents.size(); i++) {
-            List types = addressComponents.get(i).getTypes();
-            for (int j = 0; j < types.size(); j++) {
-                if (types.get(j).equals("administrative_area_level_1")) {
-                    state = addressComponents.get(i).getName();
-                }
-                if (types.get(j).equals("locality")) {
-                    city = addressComponents.get(i).getName();
-                }
-                if (types.get(j).equals("country")) {
-                    country = addressComponents.get(i).getName();
-                }
-            }
-        }
+        String fullCity = parseAddress(addressComponents);
 
-        fullCity = city +", "+ state +", " + country;
+        //rating
         if (data.getRating() != null) {
             double d = data.getRating();
             float rating = (float) d;
             rating_view.setRating(rating);
-            System.out.println(rating);
         }
         else{
             rating_view.setRating(0);
         }
 
+        //hours
         String hours = "";
         List<String> listHours = data.getHours().getWeekdayText();
         for (int i = 0; i < listHours.size(); i++){
             hours = hours + listHours.get(i) + "\n";
         }
-        //TODO fix arrival time
-        /*LocationManager locationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
-        String locationProvider = LocationManager.NETWORK_PROVIDER;
-        @SuppressLint("MissingPermission") android.location.Location lastKnownLocation = locationManager.getLastKnownLocation(locationProvider);
-        double userLat = lastKnownLocation.getLatitude();
-        double userLong = lastKnownLocation.getLongitude();
-        LatLng current = new LatLng(userLat, userLong);
-        String urlString = getDirectionsUrl(current,data.getLatlng());
-        Document doc = null;
-        HttpURLConnection urlConnection = null;
-        URL url = null;
-        try {
 
-            url = new URL(urlString.toString());
-            System.out.println(url);
-            urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setRequestMethod("GET");
-            BufferedReader rd = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-            String line;
-            StringBuilder result = new StringBuilder();
-            while ((line = rd.readLine()) != null) {
-                result.append(line);
-            }
-            rd.close();
-        } catch (Exception e) {
-        }*/
+        getArrivalTime(data.getLatlng());
 
         img_view.setImageBitmap(data.getPhoto());
         address_view.setText(data.getAddress());
@@ -201,6 +173,49 @@ public class MoreDetailsActivity extends AppCompatActivity {
         });
 
     }
+
+
+    public String parseAddress(List<AddressComponent> addressComponents){
+        String state = "";
+        String country = "";
+        String city = "";
+        String fullCity;
+        for (int i = 0; i < addressComponents.size(); i++) {
+            List types = addressComponents.get(i).getTypes();
+            for (int j = 0; j < types.size(); j++) {
+                if (types.get(j).equals("administrative_area_level_1")) {
+                    state = addressComponents.get(i).getName();
+                }
+                if (types.get(j).equals("locality")) {
+                    city = addressComponents.get(i).getName();
+                }
+                if (types.get(j).equals("country")) {
+                    country = addressComponents.get(i).getName();
+                }
+            }
+        }
+
+        fullCity = city +", "+ state +", " + country;
+        return fullCity;
+    }
+
+    public void getArrivalTime(LatLng latLng){
+        LocationManager locationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
+        String locationProvider = LocationManager.NETWORK_PROVIDER;
+        @SuppressLint("MissingPermission") android.location.Location lastKnownLocation = locationManager.getLastKnownLocation(locationProvider);
+        double userLat = lastKnownLocation.getLatitude();
+        double userLong = lastKnownLocation.getLongitude();
+        LatLng current = new LatLng(userLat, userLong);
+        String urlString = getDirectionsUrl(current,latLng);
+        TaskRequestDirections taskRequestDirections = new TaskRequestDirections();
+        //taskRequestDirections.execute(urlString);
+
+    }
+    public void addToArrivalView(String response){
+        TextView arrival_view = findViewById(R.id.arrival);
+        arrival_view.setText(response);
+    }
+
     private String getDirectionsUrl(LatLng origin, LatLng dest) {
 
         String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
@@ -215,4 +230,96 @@ public class MoreDetailsActivity extends AppCompatActivity {
 
         return "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters;
     }
+    private String requestDirection(String reqUrl) throws IOException {
+        String responseString = "";
+        InputStream inputStream = null;
+        HttpURLConnection httpURLConnection = null;
+        try {
+            URL url = new URL(reqUrl);
+            httpURLConnection = (HttpURLConnection) url.openConnection();
+            httpURLConnection.connect();
+
+            //Get the response result
+            inputStream = httpURLConnection.getInputStream();
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+            StringBuffer stringBuffer = new StringBuffer();
+            String line = "";
+            while ((line = bufferedReader.readLine()) != null) {
+                stringBuffer.append(line);
+            }
+
+            responseString = stringBuffer.toString();
+            bufferedReader.close();
+            inputStreamReader.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (inputStream != null) {
+                inputStream.close();
+            }
+            httpURLConnection.disconnect();
+        }
+        return responseString;
+    }
+
+
+
+    public class TaskRequestDirections extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... strings) {
+            String responseString = "";
+            try {
+                responseString = requestDirection(strings[0]);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            addToArrivalView(responseString);
+            return responseString;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            TaskParser taskParser = new TaskParser();
+            taskParser.execute(s);
+
+        }
+    }
+    public class TaskParser extends AsyncTask<String, Void, List<List<HashMap<String, String>>>> {
+
+        @Override
+        protected List<List<HashMap<String, String>>> doInBackground(String... strings) {
+            JSONObject jsonObject = null;
+            List<List<HashMap<String, String>>> routes = null;
+            try {
+                JSONObject jsonData = new JSONObject(strings[0]);
+                JSONArray jsonRoutes = jsonData.getJSONArray("routes");
+                for (int i = 0; i < jsonRoutes.length(); i++) {
+                    JSONObject jsonRoute = jsonRoutes.getJSONObject(i);
+
+                    JSONArray jsonLegs = jsonRoute.getJSONArray("legs");
+                    JSONObject jsonLeg = jsonLegs.getJSONObject(0);
+                    JSONObject jsonDistance = jsonLeg.getJSONObject("distance");
+                    JSONObject jsonDuration = jsonLeg.getJSONObject("duration");
+
+
+                    String duration = jsonDuration.getString("text");
+                    addToArrivalView(duration);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return routes;
+        }
+
+        @Override
+        protected void onPostExecute(List<List<HashMap<String, String>>> lists) {
+
+        }
+    }
+
 }
