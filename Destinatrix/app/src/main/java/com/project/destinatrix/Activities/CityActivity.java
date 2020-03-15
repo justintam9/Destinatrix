@@ -1,4 +1,4 @@
-package com.project.destinatrix;
+package com.project.destinatrix.Activities;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -23,17 +23,27 @@ import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.project.destinatrix.CustomCityAdapter;
+import com.project.destinatrix.DataAction;
+import com.project.destinatrix.FirebaseDatabaseHelper;
+import com.project.destinatrix.R;
+import com.project.destinatrix.ReadCallback;
+import com.project.destinatrix.RemoveCityDialog;
+import com.project.destinatrix.objects.CityData;
 import com.project.destinatrix.ui.main.GridSpacingItemDecoration;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class CityActivity extends AppCompatActivity implements RemoveCityDialog.cityDialogListener{
+public class CityActivity extends AppCompatActivity implements RemoveCityDialog.cityDialogListener {
     ArrayList<CityData> cityList;
     Integer[] images = {R.drawable.stock_image1,R.drawable.stock_image2,R.drawable.stock_image3,R.drawable.stock_image4,R.drawable.stock_image5};
     CustomCityAdapter myAdapter;
     RecyclerView recyclerView;
+    String tripId;
+    FirebaseDatabaseHelper dbHelper;
+    FirebaseDatabaseHelper dbHelperForRead;
     PlacesClient placesClient;
 
     int AUTOCOMPLETE_REQUEST_CODE = 1;
@@ -47,23 +57,29 @@ public class CityActivity extends AppCompatActivity implements RemoveCityDialog.
 
         cityList = new ArrayList<>();
         recyclerView = findViewById(R.id.recyclerview_city);
+        tripId = getIntent().getStringExtra("tripID");
+        dbHelper = new FirebaseDatabaseHelper("cities");
+        dbHelperForRead = new FirebaseDatabaseHelper("cities/" + tripId);
+
         if (!Places.isInitialized()) {
             Places.initialize(getApplicationContext(), getString(R.string.places_api_key));
             placesClient = com.google.android.libraries.places.api.Places.createClient(this);
         }
-        myAdapter = new CustomCityAdapter(this,cityList);
-      
-        cityList.add(new CityData("London",getRandomImage()));
-        cityList.add(new CityData("Madrid",getRandomImage()));
-        cityList.add(new CityData("Rome",getRandomImage()));
-        cityList.add(new CityData("Ottawa",getRandomImage()));
+
         int spanCount = 2; // 2 columns
         int spacing = 75; // 75px
         boolean includeEdge = true;
         recyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, includeEdge));
         recyclerView.setLayoutManager(new GridLayoutManager(this,2));
-        recyclerView.setAdapter(myAdapter);
 
+        dbHelperForRead.readData(DataAction.CityData, new ReadCallback() {
+            @Override
+            public void onCallBack(ArrayList<Object> list) {
+                CityActivity.this.cityList = (ArrayList<CityData>) (ArrayList<?>)list;
+                CityActivity.this.myAdapter = new CustomCityAdapter(CityActivity.this,CityActivity.this.cityList);
+                CityActivity.this.recyclerView.setAdapter(CityActivity.this.myAdapter);
+            }
+        });
 
 
         setupOnClickListeners();
@@ -74,7 +90,7 @@ public class CityActivity extends AppCompatActivity implements RemoveCityDialog.
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.PHOTO_METADATAS);
+                List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.PHOTO_METADATAS, Place.Field.LAT_LNG);
                 Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
                         .build(CityActivity.this);
                 startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
@@ -92,6 +108,8 @@ public class CityActivity extends AppCompatActivity implements RemoveCityDialog.
         if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 Place place = Autocomplete.getPlaceFromIntent(data);
+                String cityId = dbHelper.getDataId();
+                // cityList.add(city);
                 PhotoMetadata photoMetadata = place.getPhotoMetadatas().get(0);
                 // Get the attribution text.
                 String attributions = photoMetadata.getAttributions();
@@ -103,21 +121,23 @@ public class CityActivity extends AppCompatActivity implements RemoveCityDialog.
                         .build();
                 placesClient.fetchPhoto(photoRequest).addOnSuccessListener((fetchPhotoResponse) -> {
                     Bitmap bitmap = fetchPhotoResponse.getBitmap();
-                    CityData city = new CityData(place.getName(), bitmap);
+                    CityData city = new CityData(place.getName(), bitmap, CityActivity.this.tripId, cityId, place.getLatLng());
                     cityList.add(city);
+                    myAdapter.notifyDataSetChanged();
+                    dbHelper.createData(city, DataAction.CityData);
                 }).addOnFailureListener((exception) -> {
                     if (exception instanceof ApiException) {
                         ApiException apiException = (ApiException) exception;
                         int statusCode = apiException.getStatusCode();
-                        CityData city = new CityData(place.getName(), null);
+                        CityData city = new CityData(place.getName(), null, CityActivity.this.tripId, cityId, place.getLatLng());
                         cityList.add(city);
+                        myAdapter.notifyDataSetChanged();
+                        dbHelper.createData(city, DataAction.CityData);
                         // Handle error with given status code.
                         Log.e(TAG, "Place not found: " + exception.getMessage());
                     }
                 });
-                myAdapter.notifyDataSetChanged();
-
-                // TODO: ADD TO FIREBASE!
+//                myAdapter.notifyDataSetChanged();
 
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 Status status = Autocomplete.getStatusFromIntent(data);

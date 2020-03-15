@@ -1,10 +1,18 @@
-package com.project.destinatrix;
+package com.project.destinatrix.objects;
 
-class TripData {
-    String title;
-    String description;
-    Integer image;
-    String tripID;
+import com.google.firebase.database.IgnoreExtraProperties;
+
+import java.io.Serializable;
+
+@IgnoreExtraProperties
+public class TripData implements Serializable {
+    private String title;
+    private String description;
+    private Integer image;
+    private String tripID;
+
+    public TripData() {}
+
     public TripData(String title, String description, Integer image, String tripID) {
         this.title = title;
         this.description = description;

@@ -1,9 +1,11 @@
 package com.project.destinatrix;
 
 import android.content.Intent;
+import android.os.Bundle;
+
+import com.project.destinatrix.Activities.MoreDetailsActivity;
 import android.graphics.Bitmap;
 import android.media.Image;
-import android.os.Bundle;
 
 import com.google.android.libraries.places.api.model.PhotoMetadata;
 import com.google.android.libraries.places.api.model.Place;
@@ -13,15 +15,12 @@ import com.google.android.material.snackbar.Snackbar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;

@@ -1,4 +1,4 @@
-package com.project.destinatrix;
+package com.project.destinatrix.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -18,13 +18,22 @@ import com.hudomju.swipe.SwipeToDismissTouchListener;
 import com.hudomju.swipe.adapter.ListViewAdapter;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.project.destinatrix.AddTripDialog;
+import com.project.destinatrix.CustomTripAdapter;
+import com.project.destinatrix.DataAction;
+import com.project.destinatrix.EditTripDialog;
+import com.project.destinatrix.FirebaseDatabaseHelper;
+import com.project.destinatrix.R;
+import com.project.destinatrix.ReadCallback;
+import com.project.destinatrix.objects.TripData;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Date;
 
 
-public class TripListActivity extends AppCompatActivity implements AddTripDialog.tripDialogListener, EditTripDialog.tripDialogListener{
+public class TripListActivity extends AppCompatActivity implements AddTripDialog.tripDialogListener, EditTripDialog.tripDialogListener {
     private ListView list;
     ArrayList<TripData>  tripList;
     private CustomTripAdapter adapter;
@@ -32,6 +41,7 @@ public class TripListActivity extends AppCompatActivity implements AddTripDialog
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef = database.getReference();
     private FirebaseAuth mAuth;
+    private FirebaseDatabaseHelper fbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,12 +50,17 @@ public class TripListActivity extends AppCompatActivity implements AddTripDialog
 
         getSupportActionBar().setTitle("Trips");
 
-        tripList = new ArrayList<>();
-        TripData europe = new TripData("Europe", "Summer 2020", getRandomImage(), "");
-        tripList.add(europe);
-        list = findViewById(R.id.listview);
-        adapter = new CustomTripAdapter(this, tripList);
-        list.setAdapter(adapter);
+        fbHelper = new FirebaseDatabaseHelper("trips");
+        TripListActivity.this.list = findViewById(R.id.listview);
+        fbHelper.readData(DataAction.TripData, new ReadCallback() {
+            @Override
+            public void onCallBack(ArrayList<Object> list) {
+                TripListActivity.this.tripList = (ArrayList<TripData>)(Object)list;
+                TripListActivity.this.adapter = new CustomTripAdapter(TripListActivity.this, TripListActivity.this.tripList);
+                TripListActivity.this.list.setAdapter(adapter);
+            }
+        });
+
 
         list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
@@ -80,7 +95,7 @@ public class TripListActivity extends AppCompatActivity implements AddTripDialog
                     touchListener.undoPendingDismiss();
                 } else {
                     Intent mIntent = new Intent(TripListActivity.this, CityActivity.class);
-                    mIntent.putExtra("tripID",tripList.get(position).tripID);
+                    mIntent.putExtra("tripID",tripList.get(position).getTripID());
                     startActivity(mIntent);
                 }
             }
@@ -97,7 +112,11 @@ public class TripListActivity extends AppCompatActivity implements AddTripDialog
 
     @Override
     public void applyTexts(String name, String description) {
-        tripList.add(new TripData(name,description,getRandomImage(),getCurrentTimeStamp()));
+        TripData trip = new TripData(name,description,getRandomImage(),getCurrentTimeStamp());
+        trip.setTripID(fbHelper.getDataId());
+        tripList.add(trip);
+        adapter.notifyDataSetChanged();
+        fbHelper.createData(trip, DataAction.TripData);
     }
 
     public void editTexts(String name, String description, Integer pos) {
