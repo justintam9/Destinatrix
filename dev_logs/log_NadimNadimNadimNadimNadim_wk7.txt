@@ -1,0 +1,7 @@
+Duties: 
+- Work on description of architecture for D3 (4h)
+- Test app to find bugs (2h)
+
+Achievements:
+- Wrote description of OO archiceture for our app
+- Started a list of bugs

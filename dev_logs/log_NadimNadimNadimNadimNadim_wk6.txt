@@ -1,0 +1,11 @@
+Duties: 
+- Continue work on logic for destination list (1h)
+- Work on setting up app with dummy data for presentation (3h)
+- Prepare introduction for D2 presentation (1h)
+- Write status report (2h)
+
+Achievements:
+- Wrote status report
+- Wrote introduction script for D2 presentation
+- Contributed to preparing app for presentation
+
