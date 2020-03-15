@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.AsyncTask;
@@ -23,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -36,8 +38,16 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.AddressComponent;
+import com.google.android.libraries.places.api.model.AddressComponents;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.net.FetchPlaceRequest;
+import com.google.android.libraries.places.api.net.PlacesClient;
 import com.project.destinatrix.DirectionsParser;
 import com.project.destinatrix.R;
+import com.project.destinatrix.objects.DestinationData;
+
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,10 +56,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -60,9 +72,11 @@ public class MapsActivity extends SupportMapFragment implements OnMapReadyCallba
     private GoogleMap mMap;
     private static final int LOCATION_REQUEST = 500;
     ArrayList<LatLng> listPoints;
-
+    PlacesClient placesClient;
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        Places.initialize(getContext(), getString(R.string.places_api_key));
+        placesClient = com.google.android.libraries.places.api.Places.createClient(getContext());
         super.onViewCreated(view, savedInstanceState);
 
         if (savedInstanceState == null) {
@@ -127,11 +141,9 @@ public class MapsActivity extends SupportMapFragment implements OnMapReadyCallba
             public boolean onMarkerClick(final Marker marker) {
                 System.out.println("here");
                 // Retrieve the data from the marker.
-                String ID =  (String)marker.getTag();
+                DestinationData data =  (DestinationData)marker.getTag();
                 Intent mIntent = new Intent(getContext(), MoreDetailsActivity.class);
-                Bundle b = new Bundle();
-                b.putString("id", ID);
-                mIntent.putExtras(b);
+                mIntent.putExtra("id",data.getID());
                 startActivity(mIntent);
 
                 // Return false to indicate that we have not consumed the event and that we wish
@@ -143,13 +155,26 @@ public class MapsActivity extends SupportMapFragment implements OnMapReadyCallba
     }
 
 
-    public void setMarker(String name, LatLng latlng, String ID){
+    public void setMarker(String placeId){
+        List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME,Place.Field.LAT_LNG);
+        FetchPlaceRequest request = FetchPlaceRequest.newInstance(placeId, fields);
         MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(latlng);
-        markerOptions.title(name);
-        mMap.animateCamera(CameraUpdateFactory.newLatLng(latlng));
-        Marker marker = mMap.addMarker(markerOptions);
-        marker.setTag(ID);
+        placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
+            Place place = response.getPlace();
+            markerOptions.position(place.getLatLng());
+            markerOptions.title(place.getName());
+            mMap.animateCamera(CameraUpdateFactory.newLatLng(place.getLatLng()));
+            Marker marker = mMap.addMarker(markerOptions);
+            DestinationData data = new DestinationData();
+            data.setID(place.getId());
+            data.setName(place.getName());
+            data.setLatlng(place.getLatLng());
+            marker.setTag(data);
+        }).addOnFailureListener((exception) -> {
+            if (exception instanceof ApiException) {
+                ApiException apiException = (ApiException) exception;
+            }
+        });
 
     }
 

@@ -68,7 +68,7 @@ public class DestinationMapAndListActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME,Place.Field.ADDRESS,Place.Field.LAT_LNG,Place.Field.PHOTO_METADATAS);
+                List<Place.Field> fields = Arrays.asList(Place.Field.ID);
                 Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
                         .build(DestinationMapAndListActivity.this);
                 startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
@@ -82,29 +82,7 @@ public class DestinationMapAndListActivity extends AppCompatActivity {
         if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 Place place = Autocomplete.getPlaceFromIntent(data);
-                // TODO: Add to UI somehow
-                // Get the photo metadata.
-                PhotoMetadata photoMetadata = place.getPhotoMetadatas().get(0);
-                // Get the attribution text.
-                String attributions = photoMetadata.getAttributions();
-
-                // Create a FetchPhotoRequest.
-                FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata)
-                        .setMaxWidth(500) // Optional.
-                        .setMaxHeight(300) // Optional.
-                        .build();
-                placesClient.fetchPhoto(photoRequest).addOnSuccessListener((fetchPhotoResponse) -> {
-                    Bitmap bitmap = fetchPhotoResponse.getBitmap();
-                    sectionsPagerAdapter.setItem(place.getId(),place.getName(),place.getAddress(),place.getLatLng(),bitmap);
-                }).addOnFailureListener((exception) -> {
-                    if (exception instanceof ApiException) {
-                        ApiException apiException = (ApiException) exception;
-                        int statusCode = apiException.getStatusCode();
-                        sectionsPagerAdapter.setItem(place.getId(),place.getName(),place.getAddress(),place.getLatLng(),null);
-                        // Handle error with given status code.
-                        Log.e(TAG, "Place not found: " + exception.getMessage());
-                    }
-                });
+                sectionsPagerAdapter.setItem(place.getId());
                 // TODO: ADD TO FIREBASE!
 
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
