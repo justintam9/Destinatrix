@@ -1,0 +1,6 @@
+Duties: 
+- Team meeting (1h)
+- Make the architecture patterns diagrams (6h)
+
+Achievements:
+- Finished 1 architecture pattern diagram and its description 
