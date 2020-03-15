@@ -1,0 +1,7 @@
+Duties: 
+- Refactor City view UI (3h)
+- Make Desgin pattern diagram and explain it (4h)
+
+Achievements:
+- Refactored City view
+- Made design pattern diagram 
