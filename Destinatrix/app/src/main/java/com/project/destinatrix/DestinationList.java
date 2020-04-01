@@ -122,23 +122,28 @@ public class DestinationList extends Fragment {
 
     public void getPhoto(Place place, DestinationData data) {
         // Get the photo metadata.
-        PhotoMetadata photoMetadata = place.getPhotoMetadatas().get(0);
-        // Get the attribution text.
-        String attributions = photoMetadata.getAttributions();
-        // Create a FetchPhotoRequest.
-        FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata)
-                .setMaxWidth(500) // Optional.
-                .setMaxHeight(300) // Optional.
-                .build();
-        placesClient.fetchPhoto(photoRequest).addOnSuccessListener((fetchPhotoResponse) -> {
-            Bitmap bitmap = fetchPhotoResponse.getBitmap();
-            data.setPhoto(bitmap);
-            addToList(place, data);
-        }).addOnFailureListener((exception) -> {
-            if (exception instanceof ApiException) {
-                ApiException apiException = (ApiException) exception;
-            }
-        });
+        if (place.getPhotoMetadatas() != null) {
+            PhotoMetadata photoMetadata = place.getPhotoMetadatas().get(0);
+            // Get the attribution text.
+            String attributions = photoMetadata.getAttributions();
+            // Create a FetchPhotoRequest.
+            FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata)
+                    .setMaxWidth(500) // Optional.
+                    .setMaxHeight(300) // Optional.
+                    .build();
+            placesClient.fetchPhoto(photoRequest).addOnSuccessListener((fetchPhotoResponse) -> {
+                Bitmap bitmap = fetchPhotoResponse.getBitmap();
+                data.setPhoto(bitmap);
+                addToList(place, data);
+            }).addOnFailureListener((exception) -> {
+                if (exception instanceof ApiException) {
+                    ApiException apiException = (ApiException) exception;
+                }
+            });
+        }
+        else{
+            addToList(place,data);
+        }
     }
 
     public void addToList(Place place, DestinationData data){

@@ -148,29 +148,35 @@ public class MoreDetailsActivity extends AppCompatActivity {
 
     protected void getPhoto(Place place) {
         // Get the photo metadata.
-        PhotoMetadata photoMetadata = place.getPhotoMetadatas().get(0);
-        // Get the attribution text.
-        String attributions = photoMetadata.getAttributions();
+        if (place.getPhotoMetadatas() != null) {
+            PhotoMetadata photoMetadata = place.getPhotoMetadatas().get(0);
+            // Get the attribution text.
+            String attributions = photoMetadata.getAttributions();
 
-        // Create a FetchPhotoRequest.
-        FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata)
-                .setMaxWidth(500) // Optional.
-                .setMaxHeight(300) // Optional.
-                .build();
-        placesClient.fetchPhoto(photoRequest).addOnSuccessListener((fetchPhotoResponse) -> {
-            Bitmap bitmap = fetchPhotoResponse.getBitmap();
-            DestinationData ddata = new DestinationData(place.getId(), place.getName(), bitmap, place.getLatLng(), place.getAddress(), place.getAddressComponents(), place.getOpeningHours(), place.getRating());
-            make(ddata);
-        }).addOnFailureListener((exception) -> {
-            if (exception instanceof ApiException) {
-                ApiException apiException = (ApiException) exception;
-                int statusCode = apiException.getStatusCode();
-                DestinationData ddata = new DestinationData(place.getId(), place.getName(), null, place.getLatLng(), place.getAddress(), place.getAddressComponents(), place.getOpeningHours(), place.getRating());
+            // Create a FetchPhotoRequest.
+            FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata)
+                    .setMaxWidth(500) // Optional.
+                    .setMaxHeight(300) // Optional.
+                    .build();
+            placesClient.fetchPhoto(photoRequest).addOnSuccessListener((fetchPhotoResponse) -> {
+                Bitmap bitmap = fetchPhotoResponse.getBitmap();
+                DestinationData ddata = new DestinationData(place.getId(), place.getName(), bitmap, place.getLatLng(), place.getAddress(), place.getAddressComponents(), place.getOpeningHours(), place.getRating());
                 make(ddata);
-                // Handle error with given status code.
-                Log.e(TAG, "Place not found: " + exception.getMessage());
-            }
-        });
+            }).addOnFailureListener((exception) -> {
+                if (exception instanceof ApiException) {
+                    ApiException apiException = (ApiException) exception;
+                    int statusCode = apiException.getStatusCode();
+                    DestinationData ddata = new DestinationData(place.getId(), place.getName(), null, place.getLatLng(), place.getAddress(), place.getAddressComponents(), place.getOpeningHours(), place.getRating());
+                    make(ddata);
+                    // Handle error with given status code.
+                    Log.e(TAG, "Place not found: " + exception.getMessage());
+                }
+            });
+        }
+        else{
+            DestinationData ddata = new DestinationData(place.getId(), place.getName(), null, place.getLatLng(), place.getAddress(), place.getAddressComponents(), place.getOpeningHours(), place.getRating());
+            make(ddata);
+        }
 
     }
 
