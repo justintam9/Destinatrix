@@ -1,6 +1,9 @@
 package com.project.destinatrix.Activities;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.location.LocationManager;
 import android.os.Bundle;
 
 import com.google.android.gms.common.api.ApiException;
@@ -29,6 +32,7 @@ import android.graphics.Bitmap;
 import com.project.destinatrix.CustomCityAdapter;
 import com.project.destinatrix.DataAction;
 import com.project.destinatrix.FirebaseDatabaseHelper;
+import com.project.destinatrix.IntelligentItinerary;
 import com.project.destinatrix.R;
 import com.project.destinatrix.ReadCallback;
 import com.project.destinatrix.objects.CityData;
@@ -68,13 +72,23 @@ public class DestinationMapAndListActivity extends AppCompatActivity {
         dbHelperForRead.readData(DataAction.DestinationData, new ReadCallback() {
             @Override
             public void onCallBack(ArrayList<Object> list) {
-                for (Object item: list) {
-                    // TODO: MINIMUM TRAVELERS ALGO
+                // PERFORM: MINIMUM TRAVELERS ALGO
+
+                LocationManager locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+                String locationProvider = LocationManager.GPS_PROVIDER;
+                @SuppressLint("MissingPermission") android.location.Location lastKnownLocation = locationManager.getLastKnownLocation(locationProvider);
+                double userLat = lastKnownLocation.getLatitude();
+                double userLong = lastKnownLocation.getLongitude();
+
+                ArrayList<Object> itinerary = IntelligentItinerary.computeItinerary(userLat, userLong, list);
+
+                for (Object item: itinerary) {
                     DestinationData data = (DestinationData)item;
                     sectionsPagerAdapter.setItem(data.getDestinationId());
                 }
             }
         });
+
         setOnClickListeners();
     }
 

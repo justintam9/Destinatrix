@@ -2,6 +2,7 @@ package com.project.destinatrix.Activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -104,7 +105,7 @@ public class MapsActivity extends SupportMapFragment implements OnMapReadyCallba
                 if (data != null) {
 
                         Intent mIntent = new Intent(getContext(), MoreDetailsActivity.class);
-                        mIntent.putExtra("id", data.getID());
+                        mIntent.putExtra("id", data.getDestinationId());
                         startActivity(mIntent);
                 }
             }
@@ -134,7 +135,7 @@ public class MapsActivity extends SupportMapFragment implements OnMapReadyCallba
                     double userLong = lastKnownLocation.getLongitude();
                     current = new LatLng(userLat, userLong);
                     listPoints.add(0,current);
-                    listPoints.add(1, data.getLatlng());
+                    listPoints.add(1, new LatLng(data.getLatitude(), data.getLongitude()));
                     TaskRequestDirections taskRequestDirections = new TaskRequestDirections();
                     String url = getRequestUrl(listPoints.get(0), listPoints.get(1));
                     taskRequestDirections.execute(url);
