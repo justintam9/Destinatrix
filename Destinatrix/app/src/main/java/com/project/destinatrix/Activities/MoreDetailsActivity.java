@@ -145,9 +145,11 @@ public class MoreDetailsActivity extends AppCompatActivity {
 
         //hours
         String hours = "";
-        List<String> listHours = data.getHours().getWeekdayText();
-        for (int i = 0; i < listHours.size(); i++){
-            hours = hours + listHours.get(i) + "\n";
+        if (data.getHours() != null) {
+            List<String> listHours = data.getHours().getWeekdayText();
+            for (int i = 0; i < listHours.size(); i++) {
+                hours = hours + listHours.get(i) + "\n";
+            }
         }
 
         getArrivalTime(data.getLatlng());
@@ -220,7 +222,7 @@ public class MoreDetailsActivity extends AppCompatActivity {
 
     public void getArrivalTime(LatLng latLng){
         LocationManager locationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
-        String locationProvider = LocationManager.NETWORK_PROVIDER;
+        String locationProvider = LocationManager.GPS_PROVIDER;
         @SuppressLint("MissingPermission") android.location.Location lastKnownLocation = locationManager.getLastKnownLocation(locationProvider);
         double userLat = lastKnownLocation.getLatitude();
         double userLong = lastKnownLocation.getLongitude();
