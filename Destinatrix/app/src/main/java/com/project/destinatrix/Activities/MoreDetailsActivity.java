@@ -12,6 +12,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -80,14 +81,24 @@ public class MoreDetailsActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_more_details);
-        Intent intent = this.getIntent();
+          Intent intent = this.getIntent();
         String id = getIntent().getExtras().getString("id");
         System.out.println(id);
         List<Place.Field> fields = Arrays.asList(Place.Field.NAME, Place.Field.LAT_LNG,Place.Field.ADDRESS, Place.Field.ADDRESS_COMPONENTS, Place.Field.PHOTO_METADATAS, Place.Field.OPENING_HOURS, Place.Field.RATING);
         FetchPlaceRequest request = FetchPlaceRequest.newInstance(id, fields);
-
         placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
             Place place = response.getPlace();
+            LatLng latLng =  place.getLatLng();
+            Button directions = findViewById(R.id.get_directions);
+            directions.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Uri gmmIntentUri = Uri.parse("google.navigation:q="+latLng.latitude+","+latLng.longitude);
+                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                    mapIntent.setPackage("com.google.android.apps.maps");
+                    startActivity(mapIntent);
+                }
+            });
             getPhoto(place);
             Log.i(TAG, "Place found: " + place.getName());
         }).addOnFailureListener((exception) -> {
@@ -107,6 +118,8 @@ public class MoreDetailsActivity extends AppCompatActivity {
                 MoreDetailsActivity.super.onBackPressed();
             }
         });
+
+
     }
 
     public void make(DestinationData data) {
