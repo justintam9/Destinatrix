@@ -1,0 +1,7 @@
+Duties:
+- Work on firebase helper (6h)
+- Work on destinations saving into firebase (5h)
+- Plan itinerary algorithm (2h)
+
+Achievements:
+- Completed firebase functionality
