@@ -1,4 +1,4 @@
-package com.project.destinatrix;
+package com.project.destinatrix.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -26,6 +26,7 @@ import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.FetchPhotoRequest;
 import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
+import com.project.destinatrix.R;
 import com.project.destinatrix.objects.DestinationData;
 
 import java.util.ArrayList;
@@ -47,7 +48,7 @@ public class DestinationList extends Fragment {
             Place place = response.getPlace();
             DestinationData data = new DestinationData();
             data.setName(place.getName());
-            data.setID(place.getId());
+            data.setDestinationId(place.getId());
             data.setAddress(place.getAddress());
             getPhoto(place, data);
         }).addOnFailureListener((exception) -> {
@@ -77,7 +78,7 @@ public class DestinationList extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent mIntent = new Intent(getContext(), MoreDetailsActivity.class);
-                mIntent.putExtra("id", destinations.get(i).getID());
+                mIntent.putExtra("id", destinations.get(i).getDestinationId());
                 startActivity(mIntent);
             }
         });

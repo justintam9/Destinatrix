@@ -125,19 +125,20 @@ public class MoreDetailsActivity extends AppCompatActivity {
             double d = data.getRating();
             float rating = (float) d;
             rating_view.setRating(rating);
-        }
-        else{
+        } else {
             rating_view.setRating(0);
         }
 
         //hours
         String hours = "";
-        List<String> listHours = data.getHours().getWeekdayText();
-        for (int i = 0; i < listHours.size(); i++){
-            hours = hours + listHours.get(i) + "\n";
+        if (data.getHours() != null) {
+            List<String> listHours = data.getHours().getWeekdayText();
+            for (int i = 0; i < listHours.size(); i++){
+                hours = hours + listHours.get(i) + "\n";
+            }
         }
 
-        getArrivalTime(data.getLatlng());
+        getArrivalTime(data.getLatitude(), data.getLongitude());
 
         img_view.setImageBitmap(data.getPhoto());
         address_view.setText(data.getAddress());
@@ -160,26 +161,23 @@ public class MoreDetailsActivity extends AppCompatActivity {
                     .build();
             placesClient.fetchPhoto(photoRequest).addOnSuccessListener((fetchPhotoResponse) -> {
                 Bitmap bitmap = fetchPhotoResponse.getBitmap();
-                DestinationData ddata = new DestinationData(place.getId(), place.getName(), bitmap, place.getLatLng(), place.getAddress(), place.getAddressComponents(), place.getOpeningHours(), place.getRating());
+                DestinationData ddata = new DestinationData(place.getId(), place.getName(), bitmap, place.getLatLng(), place.getAddress(), place.getAddressComponents(), place.getOpeningHours(), place.getRating(), "");
                 make(ddata);
             }).addOnFailureListener((exception) -> {
                 if (exception instanceof ApiException) {
                     ApiException apiException = (ApiException) exception;
                     int statusCode = apiException.getStatusCode();
-                    DestinationData ddata = new DestinationData(place.getId(), place.getName(), null, place.getLatLng(), place.getAddress(), place.getAddressComponents(), place.getOpeningHours(), place.getRating());
+                    DestinationData ddata = new DestinationData(place.getId(), place.getName(), null, place.getLatLng(), place.getAddress(), place.getAddressComponents(), place.getOpeningHours(), place.getRating(), "");
                     make(ddata);
                     // Handle error with given status code.
                     Log.e(TAG, "Place not found: " + exception.getMessage());
                 }
             });
-        }
-        else{
-            DestinationData ddata = new DestinationData(place.getId(), place.getName(), null, place.getLatLng(), place.getAddress(), place.getAddressComponents(), place.getOpeningHours(), place.getRating());
+        } else {
+            DestinationData ddata = new DestinationData(place.getId(), place.getName(), null, place.getLatLng(), place.getAddress(), place.getAddressComponents(), place.getOpeningHours(), place.getRating(), "");
             make(ddata);
         }
-
     }
-
 
     public String parseAddress(List<AddressComponent> addressComponents){
         String state = "";
@@ -205,14 +203,14 @@ public class MoreDetailsActivity extends AppCompatActivity {
         return fullCity;
     }
 
-    public void getArrivalTime(LatLng latLng){
+    public void getArrivalTime(Double latitude, Double longitude){
         LocationManager locationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
         String locationProvider = LocationManager.NETWORK_PROVIDER;
         @SuppressLint("MissingPermission") android.location.Location lastKnownLocation = locationManager.getLastKnownLocation(locationProvider);
         double userLat = lastKnownLocation.getLatitude();
         double userLong = lastKnownLocation.getLongitude();
         LatLng current = new LatLng(userLat, userLong);
-        String urlString = getDirectionsUrl(current,latLng);
+        String urlString = getDirectionsUrl(current, latitude, longitude);
         TaskRequestDirections taskRequestDirections = new TaskRequestDirections();
         //taskRequestDirections.execute(urlString);
 
@@ -222,11 +220,11 @@ public class MoreDetailsActivity extends AppCompatActivity {
         arrival_view.setText(response);
     }
 
-    private String getDirectionsUrl(LatLng origin, LatLng dest) {
+    private String getDirectionsUrl(LatLng origin, Double latitude, Double longitude) {
 
         String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
 
-        String str_dest = "destination=" + dest.latitude + "," + dest.longitude;
+        String str_dest = "destination=" + latitude + "," + longitude;
 
         String key = "key=" + getString(R.string.places_api_key);
 

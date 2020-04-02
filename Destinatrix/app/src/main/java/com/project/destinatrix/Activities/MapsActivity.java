@@ -2,31 +2,18 @@ package com.project.destinatrix.Activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.location.Location;
 import android.os.AsyncTask;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -36,11 +23,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
-import com.google.android.libraries.places.api.model.AddressComponent;
-import com.google.android.libraries.places.api.model.AddressComponents;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
@@ -56,9 +39,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Serializable;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -144,7 +125,7 @@ public class MapsActivity extends SupportMapFragment implements OnMapReadyCallba
                     DestinationData data = (DestinationData) marker.getTag();
                 if (data != null) {
                     Intent mIntent = new Intent(getContext(), MoreDetailsActivity.class);
-                    mIntent.putExtra("id", data.getID());
+                    mIntent.putExtra("id", data.getDestinationId());
                     startActivity(mIntent);
 
                     // Return false to indicate that we have not consumed the event and that we wish
@@ -171,9 +152,11 @@ public class MapsActivity extends SupportMapFragment implements OnMapReadyCallba
             mMap.animateCamera(CameraUpdateFactory.newLatLng(place.getLatLng()));
             Marker marker = mMap.addMarker(markerOptions);
             DestinationData data = new DestinationData();
-            data.setID(place.getId());
+            data.setDestinationId(place.getId());
             data.setName(place.getName());
-            data.setLatlng(place.getLatLng());
+            data.setLatitude(place.getLatLng().latitude);
+            data.setLongitude(place.getLatLng().longitude);
+//            data.setLatLng(place.getLatLng());
             marker.setTag(data);
         }).addOnFailureListener((exception) -> {
             if (exception instanceof ApiException) {
