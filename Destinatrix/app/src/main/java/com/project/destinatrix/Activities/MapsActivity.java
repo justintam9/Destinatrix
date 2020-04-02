@@ -5,11 +5,15 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Toast;
 
@@ -22,6 +26,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
@@ -54,6 +59,10 @@ public class MapsActivity extends SupportMapFragment implements OnMapReadyCallba
     private static final int LOCATION_REQUEST = 500;
     ArrayList<LatLng> listPoints;
     PlacesClient placesClient;
+    LatLng current;
+    boolean doubleBackToExitPressedOnce = false;
+    ArrayList points = null;
+    ArrayList<Polyline> polylines;
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         Places.initialize(getContext(), getString(R.string.places_api_key));
@@ -64,6 +73,8 @@ public class MapsActivity extends SupportMapFragment implements OnMapReadyCallba
             needsInit=true;
         }
         listPoints = new ArrayList<>();
+        polylines = new ArrayList<>();
+
         getMapAsync(this);
     }
 
@@ -86,51 +97,47 @@ public class MapsActivity extends SupportMapFragment implements OnMapReadyCallba
             return;
         }
         mMap.setMyLocationEnabled(true);
-        mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
-            public void onMapLongClick(LatLng latLng) {
-                //Reset marker when already 2
-                if (listPoints.size() == 2) {
-                    listPoints.clear();
-                    mMap.clear();
-                }
-                //Save first point select
-                listPoints.add(latLng);
-                //Create marker
-                MarkerOptions markerOptions = new MarkerOptions();
-                markerOptions.position(latLng);
+            public void onInfoWindowClick(final Marker marker) {
+                DestinationData data = (DestinationData) marker.getTag();
+                if (data != null) {
 
-                if (listPoints.size() == 1) {
-                    //Add first marker to the map
-                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-                } else {
-                    //Add second marker to the map
-                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-                }
-                mMap.addMarker(markerOptions);
-
-                if (listPoints.size() == 2) {
-                    //Create the URL to get request from first marker to second marker
-                    String url = getRequestUrl(listPoints.get(0), listPoints.get(1));
-                    TaskRequestDirections taskRequestDirections = new TaskRequestDirections();
-                    taskRequestDirections.execute(url);
+                        Intent mIntent = new Intent(getContext(), MoreDetailsActivity.class);
+                        mIntent.putExtra("id", data.getID());
+                        startActivity(mIntent);
                 }
             }
         });
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(final Marker marker) {
-                System.out.println("here");
-                // Retrieve the data from the marker.
-                    DestinationData data = (DestinationData) marker.getTag();
+                DestinationData data = (DestinationData) marker.getTag();
                 if (data != null) {
-                    Intent mIntent = new Intent(getContext(), MoreDetailsActivity.class);
-                    mIntent.putExtra("id", data.getDestinationId());
-                    startActivity(mIntent);
+                    // Intent mIntent = new Intent(getContext(), MoreDetailsActivity.class);
+                    // mIntent.putExtra("id", data.getDestinationId());
+                    // startActivity(mIntent);
 
                     // Return false to indicate that we have not consumed the event and that we wish
                     // for the default behavior to occur (which is for the camera to move such that the
                     // marker is centered and for the marker's info window to open, if it has one).
+                    if (polylines.size() == 1) {
+                        for (int i = 0;i<polylines.size();i++){
+                            polylines.get(0).remove();
+                            polylines.remove(0);
+                        }
+                    }
+                    LocationManager locationManager = (LocationManager)getActivity().getSystemService(Context.LOCATION_SERVICE);
+                    String locationProvider = LocationManager.GPS_PROVIDER;
+                    @SuppressLint("MissingPermission") android.location.Location lastKnownLocation = locationManager.getLastKnownLocation(locationProvider);
+                    double userLat = lastKnownLocation.getLatitude();
+                    double userLong = lastKnownLocation.getLongitude();
+                    current = new LatLng(userLat, userLong);
+                    listPoints.add(0,current);
+                    listPoints.add(1, data.getLatlng());
+                    TaskRequestDirections taskRequestDirections = new TaskRequestDirections();
+                    String url = getRequestUrl(listPoints.get(0), listPoints.get(1));
+                    taskRequestDirections.execute(url);
                     return false;
                 }
                 else{
@@ -138,6 +145,7 @@ public class MapsActivity extends SupportMapFragment implements OnMapReadyCallba
                 }
             }
         });
+
     }
 
 
@@ -149,6 +157,7 @@ public class MapsActivity extends SupportMapFragment implements OnMapReadyCallba
             Place place = response.getPlace();
             markerOptions.position(place.getLatLng());
             markerOptions.title(place.getName());
+            markerOptions.draggable(false);
             mMap.animateCamera(CameraUpdateFactory.newLatLng(place.getLatLng()));
             Marker marker = mMap.addMarker(markerOptions);
             DestinationData data = new DestinationData();
@@ -278,8 +287,6 @@ public class MapsActivity extends SupportMapFragment implements OnMapReadyCallba
         protected void onPostExecute(List<List<HashMap<String, String>>> lists) {
             //Get list route and display it into the map
 
-            ArrayList points = null;
-
             PolylineOptions polylineOptions = null;
 
             for (List<HashMap<String, String>> path : lists) {
@@ -300,7 +307,9 @@ public class MapsActivity extends SupportMapFragment implements OnMapReadyCallba
             }
 
             if (polylineOptions != null) {
-                mMap.addPolyline(polylineOptions);
+                Polyline p = mMap.addPolyline(polylineOptions);
+                polylines.add(p);
+
             } else {
                 Toast.makeText(getActivity(), "Direction not found!", Toast.LENGTH_SHORT).show();
             }

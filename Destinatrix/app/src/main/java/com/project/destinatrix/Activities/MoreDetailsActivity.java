@@ -218,7 +218,7 @@ public class MoreDetailsActivity extends AppCompatActivity {
 
     public void getArrivalTime(Double latitude, Double longitude){
         LocationManager locationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
-        String locationProvider = LocationManager.NETWORK_PROVIDER;
+        String locationProvider = LocationManager.GPS_PROVIDER;
         @SuppressLint("MissingPermission") android.location.Location lastKnownLocation = locationManager.getLastKnownLocation(locationProvider);
         double userLat = lastKnownLocation.getLatitude();
         double userLong = lastKnownLocation.getLongitude();
