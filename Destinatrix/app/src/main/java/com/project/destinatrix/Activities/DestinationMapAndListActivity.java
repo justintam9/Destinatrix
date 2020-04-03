@@ -1,6 +1,9 @@
 package com.project.destinatrix.Activities;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.location.LocationManager;
 import android.os.Bundle;
 
 import com.google.android.gms.common.api.ApiException;
@@ -26,9 +29,17 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 import android.graphics.Bitmap;
 
+import com.project.destinatrix.CustomCityAdapter;
+import com.project.destinatrix.DataAction;
+import com.project.destinatrix.FirebaseDatabaseHelper;
+import com.project.destinatrix.IntelligentItinerary;
 import com.project.destinatrix.R;
+import com.project.destinatrix.ReadCallback;
+import com.project.destinatrix.objects.CityData;
+import com.project.destinatrix.objects.DestinationData;
 import com.project.destinatrix.ui.main.SectionsPagerAdapter;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -37,6 +48,9 @@ public class DestinationMapAndListActivity extends AppCompatActivity {
     int AUTOCOMPLETE_REQUEST_CODE = 1;
     String TAG = "DestinationMapAndListActivity";
     PlacesClient placesClient;
+    FirebaseDatabaseHelper dbHelper;
+    FirebaseDatabaseHelper dbHelperForRead;
+    String cityId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +65,29 @@ public class DestinationMapAndListActivity extends AppCompatActivity {
         viewPager.setAdapter(sectionsPagerAdapter);
         TabLayout tabs = findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
+
+        cityId = getIntent().getStringExtra("CityActivity");
+        dbHelper = new FirebaseDatabaseHelper("destinations");
+        dbHelperForRead = new FirebaseDatabaseHelper("destinations/" + cityId);
+        dbHelperForRead.readData(DataAction.DestinationData, new ReadCallback() {
+            @Override
+            public void onCallBack(ArrayList<Object> list) {
+                // PERFORM: MINIMUM TRAVELERS ALGO
+
+                LocationManager locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+                String locationProvider = LocationManager.GPS_PROVIDER;
+                @SuppressLint("MissingPermission") android.location.Location lastKnownLocation = locationManager.getLastKnownLocation(locationProvider);
+                double userLat = lastKnownLocation.getLatitude();
+                double userLong = lastKnownLocation.getLongitude();
+
+                ArrayList<Object> itinerary = IntelligentItinerary.computeItinerary(userLat, userLong, list);
+
+                for (Object item: itinerary) {
+                    DestinationData data = (DestinationData)item;
+                    sectionsPagerAdapter.setItem(data.getDestinationId());
+                }
+            }
+        });
 
         setOnClickListeners();
     }
@@ -68,7 +105,7 @@ public class DestinationMapAndListActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                List<Place.Field> fields = Arrays.asList(Place.Field.ID);
+                List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.PHOTO_METADATAS, Place.Field.LAT_LNG);
                 Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
                         .build(DestinationMapAndListActivity.this);
                 startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
@@ -84,7 +121,8 @@ public class DestinationMapAndListActivity extends AppCompatActivity {
                 Place place = Autocomplete.getPlaceFromIntent(data);
                 sectionsPagerAdapter.setItem(place.getId());
                 // TODO: ADD TO FIREBASE!
-
+                DestinationData destinationData = new DestinationData(place.getId(), place.getName(), null, place.getLatLng(), place.getAddress(), place.getAddressComponents(), place.getOpeningHours(), place.getRating(), cityId);
+                dbHelper.createData(destinationData, DataAction.DestinationData);
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 Status status = Autocomplete.getStatusFromIntent(data);
                 Toast.makeText(this, "Error adding city", Toast.LENGTH_SHORT).show();
