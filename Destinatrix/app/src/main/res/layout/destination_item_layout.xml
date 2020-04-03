@@ -27,8 +27,10 @@
         android:paddingRight="10dp"
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
-        android:layout_below="@+id/textDestinationDescription"
+        android:orientation="vertical"
+        android:layout_gravity="center_vertical"
         android:layout_marginLeft="300dp"
+        android:layout_marginTop="32dp"
         android:textColor="@color/colorPrimary"
         android:textSize="22sp"
         android:textStyle="bold" />
