@@ -105,15 +105,20 @@ public class DestinationList extends Fragment {
         }
 
         @Override
-        public View getView(int i, View view, ViewGroup viewGroup) {
+        public View getView(int position, View view, ViewGroup viewGroup) {
+            int pos = position +1;
             view = getLayoutInflater().inflate(R.layout.destination_item_layout, null);
+            TextView posView = (TextView) view.findViewById((R.id.item_numb));
             ImageView imageView = (ImageView) view.findViewById(R.id.imageView);
             TextView textView_name = (TextView) view.findViewById(R.id.textDestinationName);
             TextView textView_address = (TextView) view.findViewById(R.id.textDestinationDescription);
 
-            imageView.setImageBitmap(destinations.get(i).getPhoto());
-            textView_name.setText(destinations.get(i).getName());
-            textView_address.setText(destinations.get(i).getAddress());
+            imageView.setImageBitmap(destinations.get(position).getPhoto());
+            textView_name.setText(destinations.get(position).getName());
+            textView_address.setText(destinations.get(position).getAddress());
+            //posView.setText(destinations.get(i).getID());
+            posView.setText(" " +pos+" " );
+            pos++;
 
 
             return view;

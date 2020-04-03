@@ -19,7 +19,7 @@ import com.project.destinatrix.R;
 public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     @StringRes
-    private static final int[] TAB_TITLES = new int[]{R.string.map, R.string.list};
+    private static final int[] TAB_TITLES = new int[]{R.string.map, R.string.itinerary};
     private final Context mContext;
     MapsActivity map = new MapsActivity();
     DestinationList list = new DestinationList();
