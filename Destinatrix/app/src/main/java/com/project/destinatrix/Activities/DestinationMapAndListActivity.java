@@ -1,8 +1,10 @@
 package com.project.destinatrix.Activities;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.Bundle;
 
@@ -20,6 +22,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -60,36 +63,99 @@ public class DestinationMapAndListActivity extends AppCompatActivity {
             Places.initialize(getApplicationContext(), getString(R.string.places_api_key));
             placesClient = com.google.android.libraries.places.api.Places.createClient(this);
         }
-        sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
-        ViewPager viewPager = findViewById(R.id.view_pager);
-        viewPager.setAdapter(sectionsPagerAdapter);
-        TabLayout tabs = findViewById(R.id.tabs);
-        tabs.setupWithViewPager(viewPager);
+        checkLocationPermissions();
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
+            ViewPager viewPager = findViewById(R.id.view_pager);
+            viewPager.setAdapter(sectionsPagerAdapter);
+            TabLayout tabs = findViewById(R.id.tabs);
+            tabs.setupWithViewPager(viewPager);
 
-        cityId = getIntent().getStringExtra("CityActivity");
-        dbHelper = new FirebaseDatabaseHelper("destinations");
-        dbHelperForRead = new FirebaseDatabaseHelper("destinations/" + cityId);
-        dbHelperForRead.readData(DataAction.DestinationData, new ReadCallback() {
-            @Override
-            public void onCallBack(ArrayList<Object> list) {
-                // PERFORM: MINIMUM TRAVELERS ALGO
+            cityId = getIntent().getStringExtra("CityActivity");
+            dbHelper = new FirebaseDatabaseHelper("destinations");
+            dbHelperForRead = new FirebaseDatabaseHelper("destinations/" + cityId);
+            dbHelperForRead.readData(DataAction.DestinationData, new ReadCallback() {
+                @Override
+                public void onCallBack(ArrayList<Object> list) {
+                    // PERFORM: MINIMUM TRAVELERS ALGO
 
-                LocationManager locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-                String locationProvider = LocationManager.GPS_PROVIDER;
-                @SuppressLint("MissingPermission") android.location.Location lastKnownLocation = locationManager.getLastKnownLocation(locationProvider);
-                double userLat = lastKnownLocation.getLatitude();
-                double userLong = lastKnownLocation.getLongitude();
+                    LocationManager locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+                    String locationProvider = LocationManager.GPS_PROVIDER;
+                    @SuppressLint("MissingPermission") android.location.Location lastKnownLocation = locationManager.getLastKnownLocation(locationProvider);
+                    double userLat = lastKnownLocation.getLatitude();
+                    double userLong = lastKnownLocation.getLongitude();
 
-                ArrayList<Object> itinerary = IntelligentItinerary.computeItinerary(userLat, userLong, list);
+                    ArrayList<Object> itinerary;
 
-                for (Object item: itinerary) {
-                    DestinationData data = (DestinationData)item;
-                    sectionsPagerAdapter.setItem(data.getDestinationId());
+                    if(list.size() > 0) {
+                        itinerary = IntelligentItinerary.computeItinerary(userLat, userLong, list);
+                        for (Object item: itinerary) {
+                            DestinationData data = (DestinationData)item;
+                            sectionsPagerAdapter.setItem(data.getDestinationId());
+                        }
+                    }
                 }
-            }
-        });
+            });
+            setOnClickListeners();
+        }
 
-        setOnClickListeners();
+    }
+
+    private void checkLocationPermissions() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        }
+        return;
+    }
+
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 1: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
+                    ViewPager viewPager = findViewById(R.id.view_pager);
+                    viewPager.setAdapter(sectionsPagerAdapter);
+                    TabLayout tabs = findViewById(R.id.tabs);
+                    tabs.setupWithViewPager(viewPager);
+
+                    cityId = getIntent().getStringExtra("CityActivity");
+                    dbHelper = new FirebaseDatabaseHelper("destinations");
+                    dbHelperForRead = new FirebaseDatabaseHelper("destinations/" + cityId);
+                    dbHelperForRead.readData(DataAction.DestinationData, new ReadCallback() {
+                        @Override
+                        public void onCallBack(ArrayList<Object> list) {
+                            // PERFORM: MINIMUM TRAVELERS ALGO
+
+                            LocationManager locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+                            String locationProvider = LocationManager.GPS_PROVIDER;
+                            @SuppressLint("MissingPermission") android.location.Location lastKnownLocation = locationManager.getLastKnownLocation(locationProvider);
+                            double userLat = lastKnownLocation.getLatitude();
+                            double userLong = lastKnownLocation.getLongitude();
+
+                            ArrayList<Object> itinerary;
+
+                            if(list.size() > 0) {
+                                itinerary = IntelligentItinerary.computeItinerary(userLat, userLong, list);
+                                for (Object item: itinerary) {
+                                    DestinationData data = (DestinationData)item;
+                                    sectionsPagerAdapter.setItem(data.getDestinationId());
+                                }
+                            }
+                        }
+                    });
+
+                    setOnClickListeners();
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
     }
 
     private void setOnClickListeners() {
