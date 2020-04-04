@@ -5,15 +5,13 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.project.destinatrix.objects.CityData;
 import com.project.destinatrix.objects.TripData;
 import com.project.destinatrix.objects.UserData;
+import com.project.destinatrix.objects.DestinationData;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.List;
 
 import androidx.annotation.NonNull;
 
@@ -98,6 +96,34 @@ public enum DataAction {
         }
 
         void readData(DatabaseReference dbRef, ReadCallback callback) {}
+        void deleteData() {}
+    },
+    DestinationData {
+        void addData(Object data, DatabaseReference dbRef) {
+            DestinationData destinationData = (DestinationData)data;
+            dbRef.child(destinationData.getCityId()).child(destinationData.getDestinationId()).setValue(destinationData);
+        }
+
+        void updateData() {}
+        void readData(DatabaseReference dbRef, ReadCallback callback) {
+            ArrayList<Object> destinations = new ArrayList<>();
+            dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (DataSnapshot snapshot: dataSnapshot.getChildren()) {
+                        DestinationData destination = snapshot.getValue(DestinationData.class);
+                        destinations.add(destination);
+                    }
+                    callback.onCallBack(destinations);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+
         void deleteData() {}
     };
 

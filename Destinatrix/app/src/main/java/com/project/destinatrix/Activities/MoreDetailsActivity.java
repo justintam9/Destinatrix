@@ -12,6 +12,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -80,14 +81,24 @@ public class MoreDetailsActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_more_details);
-        Intent intent = this.getIntent();
+          Intent intent = this.getIntent();
         String id = getIntent().getExtras().getString("id");
         System.out.println(id);
         List<Place.Field> fields = Arrays.asList(Place.Field.NAME, Place.Field.LAT_LNG,Place.Field.ADDRESS, Place.Field.ADDRESS_COMPONENTS, Place.Field.PHOTO_METADATAS, Place.Field.OPENING_HOURS, Place.Field.RATING);
         FetchPlaceRequest request = FetchPlaceRequest.newInstance(id, fields);
-
         placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
             Place place = response.getPlace();
+            LatLng latLng =  place.getLatLng();
+            Button directions = findViewById(R.id.get_directions);
+            directions.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Uri gmmIntentUri = Uri.parse("google.navigation:q="+latLng.latitude+","+latLng.longitude);
+                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                    mapIntent.setPackage("com.google.android.apps.maps");
+                    startActivity(mapIntent);
+                }
+            });
             getPhoto(place);
             Log.i(TAG, "Place found: " + place.getName());
         }).addOnFailureListener((exception) -> {
@@ -107,6 +118,8 @@ public class MoreDetailsActivity extends AppCompatActivity {
                 MoreDetailsActivity.super.onBackPressed();
             }
         });
+
+
     }
 
     public void make(DestinationData data) {
@@ -125,19 +138,20 @@ public class MoreDetailsActivity extends AppCompatActivity {
             double d = data.getRating();
             float rating = (float) d;
             rating_view.setRating(rating);
-        }
-        else{
+        } else {
             rating_view.setRating(0);
         }
 
         //hours
         String hours = "";
-        List<String> listHours = data.getHours().getWeekdayText();
-        for (int i = 0; i < listHours.size(); i++){
-            hours = hours + listHours.get(i) + "\n";
+        if (data.getHours() != null) {
+            List<String> listHours = data.getHours().getWeekdayText();
+            for (int i = 0; i < listHours.size(); i++){
+                hours = hours + listHours.get(i) + "\n";
+            }
         }
 
-        getArrivalTime(data.getLatlng());
+        getArrivalTime(data.getLatitude(), data.getLongitude());
 
         img_view.setImageBitmap(data.getPhoto());
         address_view.setText(data.getAddress());
@@ -148,32 +162,35 @@ public class MoreDetailsActivity extends AppCompatActivity {
 
     protected void getPhoto(Place place) {
         // Get the photo metadata.
-        PhotoMetadata photoMetadata = place.getPhotoMetadatas().get(0);
-        // Get the attribution text.
-        String attributions = photoMetadata.getAttributions();
+        if (place.getPhotoMetadatas() != null) {
+            PhotoMetadata photoMetadata = place.getPhotoMetadatas().get(0);
+            // Get the attribution text.
+            String attributions = photoMetadata.getAttributions();
 
-        // Create a FetchPhotoRequest.
-        FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata)
-                .setMaxWidth(500) // Optional.
-                .setMaxHeight(300) // Optional.
-                .build();
-        placesClient.fetchPhoto(photoRequest).addOnSuccessListener((fetchPhotoResponse) -> {
-            Bitmap bitmap = fetchPhotoResponse.getBitmap();
-            DestinationData ddata = new DestinationData(place.getId(), place.getName(), bitmap, place.getLatLng(), place.getAddress(), place.getAddressComponents(), place.getOpeningHours(), place.getRating());
-            make(ddata);
-        }).addOnFailureListener((exception) -> {
-            if (exception instanceof ApiException) {
-                ApiException apiException = (ApiException) exception;
-                int statusCode = apiException.getStatusCode();
-                DestinationData ddata = new DestinationData(place.getId(), place.getName(), null, place.getLatLng(), place.getAddress(), place.getAddressComponents(), place.getOpeningHours(), place.getRating());
+            // Create a FetchPhotoRequest.
+            FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata)
+                    .setMaxWidth(500) // Optional.
+                    .setMaxHeight(300) // Optional.
+                    .build();
+            placesClient.fetchPhoto(photoRequest).addOnSuccessListener((fetchPhotoResponse) -> {
+                Bitmap bitmap = fetchPhotoResponse.getBitmap();
+                DestinationData ddata = new DestinationData(place.getId(), place.getName(), bitmap, place.getLatLng(), place.getAddress(), place.getAddressComponents(), place.getOpeningHours(), place.getRating(), "");
                 make(ddata);
-                // Handle error with given status code.
-                Log.e(TAG, "Place not found: " + exception.getMessage());
-            }
-        });
-
+            }).addOnFailureListener((exception) -> {
+                if (exception instanceof ApiException) {
+                    ApiException apiException = (ApiException) exception;
+                    int statusCode = apiException.getStatusCode();
+                    DestinationData ddata = new DestinationData(place.getId(), place.getName(), null, place.getLatLng(), place.getAddress(), place.getAddressComponents(), place.getOpeningHours(), place.getRating(), "");
+                    make(ddata);
+                    // Handle error with given status code.
+                    Log.e(TAG, "Place not found: " + exception.getMessage());
+                }
+            });
+        } else {
+            DestinationData ddata = new DestinationData(place.getId(), place.getName(), null, place.getLatLng(), place.getAddress(), place.getAddressComponents(), place.getOpeningHours(), place.getRating(), "");
+            make(ddata);
+        }
     }
-
 
     public String parseAddress(List<AddressComponent> addressComponents){
         String state = "";
@@ -199,14 +216,14 @@ public class MoreDetailsActivity extends AppCompatActivity {
         return fullCity;
     }
 
-    public void getArrivalTime(LatLng latLng){
+    public void getArrivalTime(Double latitude, Double longitude){
         LocationManager locationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
-        String locationProvider = LocationManager.NETWORK_PROVIDER;
+        String locationProvider = LocationManager.GPS_PROVIDER;
         @SuppressLint("MissingPermission") android.location.Location lastKnownLocation = locationManager.getLastKnownLocation(locationProvider);
         double userLat = lastKnownLocation.getLatitude();
         double userLong = lastKnownLocation.getLongitude();
         LatLng current = new LatLng(userLat, userLong);
-        String urlString = getDirectionsUrl(current,latLng);
+        String urlString = getDirectionsUrl(current, latitude, longitude);
         TaskRequestDirections taskRequestDirections = new TaskRequestDirections();
         //taskRequestDirections.execute(urlString);
 
@@ -216,11 +233,11 @@ public class MoreDetailsActivity extends AppCompatActivity {
         arrival_view.setText(response);
     }
 
-    private String getDirectionsUrl(LatLng origin, LatLng dest) {
+    private String getDirectionsUrl(LatLng origin, Double latitude, Double longitude) {
 
         String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
 
-        String str_dest = "destination=" + dest.latitude + "," + dest.longitude;
+        String str_dest = "destination=" + latitude + "," + longitude;
 
         String key = "key=" + getString(R.string.places_api_key);
 

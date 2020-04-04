@@ -1,0 +1,5 @@
+Duties:
+- work on itinerary algorithm (6h)
+
+Achievements:
+- complete itinerary algorithm

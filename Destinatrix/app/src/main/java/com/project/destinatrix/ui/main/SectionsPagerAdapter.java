@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
-import com.project.destinatrix.DestinationList;
+import com.project.destinatrix.Activities.DestinationList;
 import com.project.destinatrix.Activities.MapsActivity;
 import com.project.destinatrix.R;
 
@@ -32,6 +32,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         list.setDestination(placeId);
         map.setMarker(placeId);
     }
+
     @Override
     public Fragment getItem(int position) {
         // getItem is called to instantiate the fragment for the given page.

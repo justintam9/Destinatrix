@@ -61,7 +61,7 @@ public class CustomCityAdapter extends RecyclerView.Adapter<CustomCityAdapter.My
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(mContext, DestinationMapAndListActivity.class);
-                intent.putExtra("CityActivity", cityDataList.get(position));
+                intent.putExtra("CityActivity", cityDataList.get(position).getCityId());
                 mContext.startActivity(intent);
             }
         });
