@@ -64,6 +64,40 @@ public class DestinationMapAndListActivity extends AppCompatActivity {
             placesClient = com.google.android.libraries.places.api.Places.createClient(this);
         }
         checkLocationPermissions();
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
+            ViewPager viewPager = findViewById(R.id.view_pager);
+            viewPager.setAdapter(sectionsPagerAdapter);
+            TabLayout tabs = findViewById(R.id.tabs);
+            tabs.setupWithViewPager(viewPager);
+
+            cityId = getIntent().getStringExtra("CityActivity");
+            dbHelper = new FirebaseDatabaseHelper("destinations");
+            dbHelperForRead = new FirebaseDatabaseHelper("destinations/" + cityId);
+            dbHelperForRead.readData(DataAction.DestinationData, new ReadCallback() {
+                @Override
+                public void onCallBack(ArrayList<Object> list) {
+                    // PERFORM: MINIMUM TRAVELERS ALGO
+
+                    LocationManager locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+                    String locationProvider = LocationManager.GPS_PROVIDER;
+                    @SuppressLint("MissingPermission") android.location.Location lastKnownLocation = locationManager.getLastKnownLocation(locationProvider);
+                    double userLat = lastKnownLocation.getLatitude();
+                    double userLong = lastKnownLocation.getLongitude();
+
+                    ArrayList<Object> itinerary;
+
+                    if(list.size() > 0) {
+                        itinerary = IntelligentItinerary.computeItinerary(userLat, userLong, list);
+                        for (Object item: itinerary) {
+                            DestinationData data = (DestinationData)item;
+                            sectionsPagerAdapter.setItem(data.getDestinationId());
+                        }
+                    }
+                }
+            });
+            setOnClickListeners();
+        }
 
     }
 
