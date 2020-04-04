@@ -1,8 +1,10 @@
 package com.project.destinatrix.Activities;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.Bundle;
 
@@ -20,6 +22,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -60,6 +63,10 @@ public class DestinationMapAndListActivity extends AppCompatActivity {
             Places.initialize(getApplicationContext(), getString(R.string.places_api_key));
             placesClient = com.google.android.libraries.places.api.Places.createClient(this);
         }
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 500);
+            return;
+        }
         sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
         ViewPager viewPager = findViewById(R.id.view_pager);
         viewPager.setAdapter(sectionsPagerAdapter);
@@ -80,11 +87,14 @@ public class DestinationMapAndListActivity extends AppCompatActivity {
                 double userLat = lastKnownLocation.getLatitude();
                 double userLong = lastKnownLocation.getLongitude();
 
-                ArrayList<Object> itinerary = IntelligentItinerary.computeItinerary(userLat, userLong, list);
+                ArrayList<Object> itinerary;
 
-                for (Object item: itinerary) {
-                    DestinationData data = (DestinationData)item;
-                    sectionsPagerAdapter.setItem(data.getDestinationId());
+                if(list.size() > 0) {
+                    itinerary = IntelligentItinerary.computeItinerary(userLat, userLong, list);
+                    for (Object item: itinerary) {
+                        DestinationData data = (DestinationData)item;
+                        sectionsPagerAdapter.setItem(data.getDestinationId());
+                    }
                 }
             }
         });
