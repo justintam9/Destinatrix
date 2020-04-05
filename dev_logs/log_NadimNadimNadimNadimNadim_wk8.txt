@@ -1,0 +1,9 @@
+Duties: 
+- Meet with team to discuss goals from feedback given during D3 presentation (2h)
+- Research how to get directions from a place using Google API and installed navigation app on phone (5h)
+- Investigate the MoreDetailsActivity.java file to understand how it gets Place information (3h)
+
+Achievements:
+
+
+

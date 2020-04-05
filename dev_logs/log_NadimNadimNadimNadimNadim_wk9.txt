@@ -1,0 +1,6 @@
+Duties: 
+- Work on adding a button to the MoreDetails View to get directions to the Destination (3h)
+- Added code to start navigation to a destination on button press (8h)
+
+Achievements:
+- Added button in the MoreDetails view that starts navigation to the given place in Google Maps 
