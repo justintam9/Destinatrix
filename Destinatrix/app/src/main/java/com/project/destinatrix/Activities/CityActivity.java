@@ -76,7 +76,7 @@ public class CityActivity extends AppCompatActivity implements RemoveCityDialog.
             @Override
             public void onCallBack(ArrayList<Object> list) {
                 CityActivity.this.cityList = (ArrayList<CityData>) (ArrayList<?>)list;
-                CityActivity.this.myAdapter = new CustomCityAdapter(CityActivity.this,CityActivity.this.cityList);
+                CityActivity.this.myAdapter = new CustomCityAdapter(CityActivity.this,CityActivity.this.cityList, placesClient);
                 CityActivity.this.recyclerView.setAdapter(CityActivity.this.myAdapter);
             }
         });
@@ -109,34 +109,10 @@ public class CityActivity extends AppCompatActivity implements RemoveCityDialog.
             if (resultCode == RESULT_OK) {
                 Place place = Autocomplete.getPlaceFromIntent(data);
                 String cityId = dbHelper.getDataId();
-                // cityList.add(city);
-                PhotoMetadata photoMetadata = place.getPhotoMetadatas().get(0);
-                // Get the attribution text.
-                String attributions = photoMetadata.getAttributions();
-
-                // Create a FetchPhotoRequest.
-                FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata)
-                        .setMaxWidth(500) // Optional.
-                        .setMaxHeight(300) // Optional.
-                        .build();
-                placesClient.fetchPhoto(photoRequest).addOnSuccessListener((fetchPhotoResponse) -> {
-                    Bitmap bitmap = fetchPhotoResponse.getBitmap();
-                    CityData city = new CityData(place.getName(), bitmap, CityActivity.this.tripId, cityId, place.getLatLng());
+                CityData city = new CityData(place.getName(), place.getId(), CityActivity.this.tripId, cityId, place.getLatLng());
                     cityList.add(city);
                     myAdapter.notifyDataSetChanged();
                     dbHelper.createData(city, DataAction.CityData);
-                }).addOnFailureListener((exception) -> {
-                    if (exception instanceof ApiException) {
-                        ApiException apiException = (ApiException) exception;
-                        int statusCode = apiException.getStatusCode();
-                        CityData city = new CityData(place.getName(), null, CityActivity.this.tripId, cityId, place.getLatLng());
-                        cityList.add(city);
-                        myAdapter.notifyDataSetChanged();
-                        dbHelper.createData(city, DataAction.CityData);
-                        // Handle error with given status code.
-                        Log.e(TAG, "Place not found: " + exception.getMessage());
-                    }
-                });
 //                myAdapter.notifyDataSetChanged();
 
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {

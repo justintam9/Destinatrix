@@ -15,6 +15,7 @@ import android.util.Base64;
 @IgnoreExtraProperties
 public class CityData implements Serializable {
     private String title;
+    private String placeId;
 
     private String image;
     private String tripId;
@@ -24,9 +25,9 @@ public class CityData implements Serializable {
 
     public CityData() {}
 
-    public CityData(String title, Bitmap image, String tripId, String cityId, LatLng lat_lng) {
+    public CityData(String title, String placeId, String tripId, String cityId, LatLng lat_lng) {
         this.title = title;
-        this.image = bitmapToString(image);
+        this.placeId = placeId;
         this.tripId = tripId;
         this.cityId = cityId;
         this.latitude = lat_lng.latitude;
@@ -43,6 +44,8 @@ public class CityData implements Serializable {
 
     public void setTripId(String tripId) { this.tripId = tripId; }
     public void setCityId(String cityId) { this.cityId = cityId; }
+
+    public String getPlaceId() { return placeId; }
 
     public String getTitle() {
         return title;
@@ -62,19 +65,4 @@ public class CityData implements Serializable {
         return cityId;
     }
 
-    public String bitmapToString(Bitmap bitmap) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        byte[] b = baos.toByteArray();
-        return Base64.encodeToString(b, Base64.DEFAULT);
-    }
-
-    public Bitmap getEncodedImage() {
-        try {
-            byte [] encodeByte = Base64.decode(image, Base64.DEFAULT);
-            return BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
-        } catch(Exception e) {
-            e.getMessage();
-            return null;
-        }
-    }
 }
