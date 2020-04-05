@@ -1,0 +1,5 @@
+Duties:
+-directions on map view from current location to selected marker (4h)
+-bug fixes (5h)
+Achievements:
+-map view completed

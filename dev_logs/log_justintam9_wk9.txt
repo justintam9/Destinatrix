@@ -1,0 +1,9 @@
+Duties:
+-more details view logic (2h)
+-use placesAPI photo in more details (1h)
+-refactor destinations and city logics to fetch places API photos (5h)
+-bug fixes (3h)
+
+Achievements:
+-finished more details
+-destinations and city views correctly update their photos, allows for an easy save to db
